@@ -13,46 +13,74 @@ module.exports = async (req, res) => {
         return;
     }
 
-    const url = req.query.url;
-    if (!url) {
-        res.status(400).json({ error: 'Missing url parameter' });
+    // Get query parameters
+    const { accountName, param1, param2, param3, param4 } = req.query;
+
+    // Validate required parameters
+    if (!accountName || !param1 || !param2) {
+        res.status(400).json({ 
+            error: 'Missing required parameters. Please provide accountName, param1, and param2.' 
+        });
         return;
     }
+
+    // Construct the URL
+    let url = `https://${accountName}.iclasspro.com/portal/classes?${param1}&${param2}`;
+    if (param3) url += `&${param3}`;
+    if (param4) url += `&${param4}`;
+
+    console.log('Fetching URL:', url);
 
     let browser = null;
     try {
         // Launch browser
         browser = await puppeteer.launch({
-            args: chromium.args,
+            args: [...chromium.args, '--disable-web-security'],
             defaultViewport: chromium.defaultViewport,
             executablePath: await chromium.executablePath,
             headless: true,
+            ignoreHTTPSErrors: true
         });
 
         // Create new page
         const page = await browser.newPage();
         
-        // Navigate to URL
+        // Navigate to URL and wait for content
         await page.goto(url, {
-            waitUntil: 'networkidle0',  // Wait until network is idle
-            timeout: 30000,  // 30 second timeout
+            waitUntil: 'networkidle0',
+            timeout: 30000
         });
 
-        // Wait additional time for Angular to render
-        await page.waitForTimeout(3000);
+        // Wait for Angular to render (wait for specific elements)
+        await page.waitForSelector('article.card .card-body', { timeout: 10000 });
 
-        // Extract class cards
-        const classes = await page.evaluate(() => {
+        // Additional wait to ensure dynamic content is loaded
+        await page.waitForTimeout(2000);
+
+        // Extract the HTML content
+        const classCards = await page.evaluate(() => {
             const cards = document.querySelectorAll('article.card .card-body');
             return Array.from(cards).map(card => ({
-                html: card.innerHTML
+                html: card.innerHTML,
+                // Optionally extract specific data if needed
+                title: card.querySelector('h3')?.textContent || '',
+                description: card.querySelector('p')?.textContent || ''
             }));
         });
 
-        res.json({ classes });
+        // Return the extracted content
+        res.json({ 
+            success: true,
+            classes: classCards,
+            timestamp: new Date().toISOString()
+        });
+
     } catch (error) {
         console.error('Proxy error:', error);
-        res.status(500).json({ error: 'Failed to fetch data' });
+        res.status(500).json({ 
+            error: 'Failed to fetch class data',
+            message: error.message
+        });
     } finally {
         if (browser) {
             await browser.close();
