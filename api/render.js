@@ -1,5 +1,5 @@
-import puppeteer from 'puppeteer-core';
-import chrome from '@sparticuz/chromium';
+import axios from 'axios';
+import cheerio from 'cheerio';
 
 export default async function handler(req, res) {
     // Log the incoming request
@@ -23,7 +23,7 @@ export default async function handler(req, res) {
     }
 
     try {
-        const { accountName, param1, param2, param3, param4 } = req.query;
+        const { accountName, param1, param2 } = req.query;
 
         // Validate required parameters
         if (!accountName) {
@@ -37,110 +37,37 @@ export default async function handler(req, res) {
         const params = new URLSearchParams();
         if (param1) params.append(param1.split('=')[0], param1.split('=')[1]);
         if (param2) params.append(param2.split('=')[0], param2.split('=')[1]);
-        if (param3) params.append(param3.split('=')[0], param3.split('=')[1]);
-        if (param4) params.append(param4.split('=')[0], param4.split('=')[1]);
 
         const url = `${baseUrl}?${params.toString()}`;
-        console.log('Loading URL:', url);
+        console.log('Fetching URL:', url);
 
-        // Launch browser with Vercel-specific configuration
-        console.log('Launching browser...');
-        const browser = await puppeteer.launch({
-            args: [
-                ...chrome.args,
-                '--no-sandbox',
-                '--disable-setuid-sandbox',
-                '--disable-dev-shm-usage',
-                '--disable-accelerated-2d-canvas',
-                '--disable-gpu'
-            ],
-            executablePath: await chrome.executablePath,
-            headless: chrome.headless,
-            ignoreHTTPSErrors: true
+        // Make the request with browser-like headers
+        const response = await axios.get(url, {
+            headers: {
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.9',
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1'
+            },
+            timeout: 10000
         });
 
-        try {
-            // Create new page
-            console.log('Creating new page...');
-            const page = await browser.newPage();
+        // Load the HTML into cheerio
+        const $ = cheerio.load(response.data);
 
-            // Set viewport
-            await page.setViewport({ width: 1280, height: 800 });
+        // Extract card bodies
+        const cardBodies = [];
+        $('.card-body').each((i, elem) => {
+            cardBodies.push($(elem).html());
+        });
 
-            // Set user agent
-            await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
+        console.log(`Found ${cardBodies.length} card bodies`);
 
-            // Navigate to URL with increased timeout
-            console.log('Navigating to URL...');
-            await page.goto(url, { waitUntil: 'networkidle0', timeout: 15000 });
-
-            // Wait for card bodies to appear with increased timeout
-            console.log('Waiting for card bodies...');
-            await page.waitForSelector('.card-body', { timeout: 15000 });
-
-            // Extract card bodies
-            console.log('Extracting card bodies...');
-            const cardBodies = await page.evaluate(() => {
-                const cards = document.querySelectorAll('.card-body');
-                return Array.from(cards).map(card => card.innerHTML);
-            });
-
-            console.log(`Found ${cardBodies.length} card bodies`);
-
-            // If no card bodies found, return a loading state
-            if (!cardBodies || cardBodies.length === 0) {
-                console.log('No card bodies found, returning loading state');
-                const loadingHtml = `
-                    <!DOCTYPE html>
-                    <html>
-                    <head>
-                        <meta charset="utf-8">
-                        <meta name="viewport" content="width=device-width, initial-scale=1">
-                        <style>
-                            body {
-                                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-                                margin: 0;
-                                padding: 20px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                min-height: 200px;
-                                background: #f5f5f5;
-                            }
-                            .loading-container {
-                                text-align: center;
-                                padding: 20px;
-                                background: white;
-                                border-radius: 8px;
-                                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                            }
-                            .loading-message {
-                                color: #666;
-                                font-size: 18px;
-                                margin-bottom: 10px;
-                            }
-                            .loading-details {
-                                color: #999;
-                                font-size: 14px;
-                            }
-                        </style>
-                    </head>
-                    <body>
-                        <div class="loading-container">
-                            <div class="loading-message">Loading classes...</div>
-                            <div class="loading-details">Please wait while we fetch the latest schedule</div>
-                        </div>
-                    </body>
-                    </html>
-                `;
-
-                res.setHeader('Content-Type', 'text/html');
-                res.status(200).send(loadingHtml);
-                return;
-            }
-
-            // Create a clean HTML response
-            const html = `
+        // If no card bodies found, return a loading state
+        if (!cardBodies || cardBodies.length === 0) {
+            console.log('No card bodies found, returning loading state');
+            const loadingHtml = `
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -151,56 +78,100 @@ export default async function handler(req, res) {
                             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
                             margin: 0;
                             padding: 20px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            min-height: 200px;
                             background: #f5f5f5;
                         }
-                        .card-body {
+                        .loading-container {
+                            text-align: center;
+                            padding: 20px;
                             background: white;
                             border-radius: 8px;
-                            padding: 20px;
-                            margin-bottom: 20px;
                             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                         }
-                        img {
-                            max-width: 100%;
-                            height: auto;
-                            border-radius: 4px;
+                        .loading-message {
+                            color: #666;
+                            font-size: 18px;
+                            margin-bottom: 10px;
                         }
-                        a {
-                            color: #007bff;
-                            text-decoration: none;
-                        }
-                        a:hover {
-                            text-decoration: underline;
+                        .loading-details {
+                            color: #999;
+                            font-size: 14px;
                         }
                     </style>
                 </head>
                 <body>
-                    ${cardBodies.join('\n')}
-                    <script>
-                        // Send height to parent window
-                        function updateHeight() {
-                            const height = document.body.scrollHeight;
-                            window.parent.postMessage({ type: 'iframeHeight', height }, '*');
-                        }
-                        
-                        // Update height on load and when content changes
-                        window.addEventListener('load', updateHeight);
-                        const observer = new MutationObserver(updateHeight);
-                        observer.observe(document.body, { childList: true, subtree: true });
-                    </script>
+                    <div class="loading-container">
+                        <div class="loading-message">Loading classes...</div>
+                        <div class="loading-details">Please wait while we fetch the latest schedule</div>
+                    </div>
                 </body>
                 </html>
             `;
 
-            // Send the response
             res.setHeader('Content-Type', 'text/html');
-            res.status(200).send(html);
-
-        } finally {
-            // Close browser
-            console.log('Closing browser...');
-            await browser.close();
+            res.status(200).send(loadingHtml);
+            return;
         }
+
+        // Create a clean HTML response
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <style>
+                    body {
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                        margin: 0;
+                        padding: 20px;
+                        background: #f5f5f5;
+                    }
+                    .card-body {
+                        background: white;
+                        border-radius: 8px;
+                        padding: 20px;
+                        margin-bottom: 20px;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                    }
+                    img {
+                        max-width: 100%;
+                        height: auto;
+                        border-radius: 4px;
+                    }
+                    a {
+                        color: #007bff;
+                        text-decoration: none;
+                    }
+                    a:hover {
+                        text-decoration: underline;
+                    }
+                </style>
+            </head>
+            <body>
+                ${cardBodies.join('\n')}
+                <script>
+                    // Send height to parent window
+                    function updateHeight() {
+                        const height = document.body.scrollHeight;
+                        window.parent.postMessage({ type: 'iframeHeight', height }, '*');
+                    }
+                    
+                    // Update height on load and when content changes
+                    window.addEventListener('load', updateHeight);
+                    const observer = new MutationObserver(updateHeight);
+                    observer.observe(document.body, { childList: true, subtree: true });
+                </script>
+            </body>
+            </html>
+        `;
+
+        // Send the response
+        res.setHeader('Content-Type', 'text/html');
+        res.status(200).send(html);
 
     } catch (error) {
         console.error('Render endpoint error:', error);
