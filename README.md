@@ -33,34 +33,13 @@ A lightweight widget for embedding IClassPro class schedules on any website.
 </script>
 ```
 
-## Development
-
-1. Clone the repository:
-```bash
-git clone https://github.com/DevCabin/icp-widget.git
-cd icp-widget
-```
-
-2. Install dependencies:
-```bash
-npm install
-```
-
-3. Run locally:
-```bash
-npm run dev
-```
-
 ## Deployment
 
 The widget is deployed on Vercel. To deploy your own instance:
 
 1. Fork this repository
 2. Connect your fork to Vercel
-3. Deploy using the Vercel dashboard or CLI:
-```bash
-npm run deploy
-```
+3. Deploy using the Vercel dashboard
 
 ## Configuration
 
