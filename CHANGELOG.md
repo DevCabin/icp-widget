@@ -4,10 +4,24 @@ All notable changes to the IClassPro Widget project will be documented in this f
 
 ## [1.0.0] - 2024-03-25
 
+### Changed
+- Switched from Puppeteer to axios + cheerio for simpler and more reliable server-side rendering
+- Removed complex browser dependencies in favor of lightweight HTML parsing
+- Improved error handling and response formatting
+- Added detailed logging throughout the rendering process
+
+### Fixed
+- Resolved dependency conflicts with Puppeteer and Chrome packages
+- Improved CORS handling and response headers
+- Enhanced error messages and user feedback
+
 ### Added
+- Support for direct HTML parsing and extraction
+- Clean HTML response with proper styling
+- Automatic iframe height adjustment
+- Detailed request and response logging
 - Basic widget implementation with server-side rendering
 - Simple client-side display
-- Puppeteer-based content extraction
 - Basic error handling
 - CORS support
 

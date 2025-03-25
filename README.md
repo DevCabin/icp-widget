@@ -1,116 +1,75 @@
 # IClassPro Widget
 
-A lightweight, embeddable widget for displaying IClassPro classes on your website. This widget uses server-side rendering to properly handle Angular content and display your class listings anywhere.
+A lightweight widget for embedding IClassPro class schedules on any website. This widget fetches and displays class information from IClassPro's portal, with support for filtering and custom styling.
 
 ## Features
 
-- 🎨 Responsive grid layout
-- 🚀 Server-side rendering of Angular content
-- 🔄 Automatic content extraction
-- ⚡ Loading states and error handling
-- 🌐 CORS-friendly
-- 📱 Mobile-friendly
+- Server-side rendering for better performance
+- Support for filtering by gender, program, and other parameters
+- Responsive design that works on all devices
+- Automatic height adjustment
+- Clean, modern styling
+- CORS-enabled for cross-origin embedding
 
-## Quick Start
+## Installation
 
-Add the widget script to your HTML with the required configuration attributes:
-
+1. Add the widget script to your HTML:
 ```html
 <script 
-  src="https://icp-widget-53os27sci-devcabins-projects.vercel.app/icp-widget.js"
-  data-account-name="your-gym"
-  data-param1="gender-filter"
-  data-param2="program-filter"
-  data-container-id="icp-widget-container">
+    src="https://icp-widget.vercel.app/icp-widget.js"
+    data-account-name="your-account-name"
+    data-param1="genders=2"
+    data-param2="programs=56"
+    data-container-id="icp-widget-container">
 </script>
 ```
 
-### Configuration Options
+2. Add a container element where you want the widget to appear:
+```html
+<div id="icp-widget-container"></div>
+```
 
-Required parameters:
-- `data-account-name`: Your IClassPro account name (e.g., "your-gym")
-- `data-param1`: First filter parameter (typically gender filter)
-- `data-param2`: Second filter parameter (typically program filter)
+## Configuration
 
-Optional parameters:
-- `data-param3`: Additional filter parameter
-- `data-param4`: Additional filter parameter
-- `data-container-id`: Custom container ID (defaults to "icp-widget-container")
+The widget accepts the following data attributes:
 
-The widget will automatically create its container element where the script tag is placed.
-
-## How It Works
-
-1. The widget script is loaded on your page
-2. It constructs the appropriate IClassPro portal URL with your parameters
-3. Our serverless function uses Puppeteer to:
-   - Load the portal URL
-   - Wait for the Angular app to fully render
-   - Extract the class card content
-4. The widget displays the extracted content in a clean, responsive layout
-
-## States & Feedback
-
-The widget provides clear feedback about its current state:
-
-- Loading: "Loading classes..."
-- No Classes: "No classes available at the moment."
-- Error: "Error loading classes. Please try again later."
-
-## Technical Implementation
-
-- Uses Vercel serverless functions for server-side rendering
-- Implements Puppeteer for proper Angular content extraction
-- Handles CORS and cross-origin concerns
-- Provides fallbacks and error states
-- Automatically retries on failure
+- `data-account-name`: Your IClassPro account name (required)
+- `data-param1`: First filter parameter (e.g., "genders=2")
+- `data-param2`: Second filter parameter (e.g., "programs=56")
+- `data-param3`: Third filter parameter
+- `data-param4`: Fourth filter parameter
+- `data-container-id`: ID of the container element (defaults to "icp-widget-container")
 
 ## Development
 
-1. Clone:
-```bash
-git clone https://github.com/DevCabin/icp-widget.git
-```
+This project is built with:
+- Vercel for serverless deployment
+- Axios for HTTP requests
+- Cheerio for HTML parsing
+- Vanilla JavaScript for client-side functionality
 
-2. Install:
+### Local Development
+
+1. Clone the repository
+2. Install dependencies:
 ```bash
 npm install
 ```
 
-3. Run locally:
+3. Run the development server:
 ```bash
-vercel dev
+npm run dev
 ```
 
-4. Deploy:
+4. Deploy to Vercel:
 ```bash
-vercel deploy
+npm run deploy
 ```
-
-## Dependencies
-
-- chrome-aws-lambda: ^10.1.0
-- puppeteer-core: ^10.1.0
-- vercel: ^32.0.0
-
-## Browser Support
-
-The widget is compatible with all modern browsers:
-- Chrome/Edge (latest)
-- Firefox (latest)
-- Safari (latest)
-- Mobile browsers
-
-## Performance
-
-- First load may take 2-3 seconds due to serverless cold start
-- Subsequent loads are typically under 1 second
-- Content is loaded asynchronously and doesn't block page rendering
-
-## Support
-
-Open an issue on GitHub for support.
 
 ## License
 
-MIT
+ISC
+
+## Support
+
+For issues and feature requests, please open an issue on GitHub.
