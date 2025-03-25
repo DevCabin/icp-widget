@@ -102,11 +102,24 @@
             if (config.param3) params.append('param3', config.param3);
             if (config.param4) params.append('param4', config.param4);
 
-            // Initial delay to let Angular load
-            await new Promise(resolve => setTimeout(resolve, 3000));
+            // Log the query parameters
+            console.log('Widget Query Parameters:', {
+                accountName: config.accountName,
+                param1: config.param1,
+                param2: config.param2,
+                param3: config.param3,
+                param4: config.param4,
+                fullUrl: `https://icp-widget.vercel.app/api/proxy?${params}`
+            });
+
+            // Initial delay to let Angular load (extended to 4 seconds)
+            await new Promise(resolve => setTimeout(resolve, 4000));
 
             const response = await fetch(`https://icp-widget.vercel.app/api/proxy?${params}`);
             const data = await response.json();
+            
+            // Log the response data
+            console.log('Widget Response:', data);
             
             if (data.error) {
                 throw new Error(data.error);
@@ -115,6 +128,7 @@
             renderClasses(data.classes);
         } catch (error) {
             clearInterval(loadingInterval);
+            console.error('Widget Error:', error);
             widgetContainer.innerHTML = `
                 <div style="
                     text-align: center;
