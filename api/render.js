@@ -45,11 +45,14 @@ export default async function handler(req, res) {
     try {
         // Launch Puppeteer
         console.log('Launching Puppeteer...');
+        const executablePath = await chrome.executablePath;
+        console.log('Chrome executable path:', executablePath);
+        
         const browser = await puppeteer.launch({
             headless: 'new',
             args: chrome.args,
             defaultViewport: chrome.defaultViewport,
-            executablePath: await chrome.executablePath,
+            executablePath: executablePath,
             ignoreHTTPSErrors: true
         });
         console.log('Puppeteer launched successfully');
