@@ -23,6 +23,7 @@ export default async function handler(req, res) {
         return res.status(400).json({ error: 'Account name is required' });
     }
 
+    let browser = null;
     try {
         // Construct the URL with query parameters
         let url = `https://portal.iclasspro.com/${accountName}/classes`;
@@ -33,8 +34,15 @@ export default async function handler(req, res) {
 
         console.log('Fetching URL:', url);
 
+        // Log Puppeteer configuration
+        console.log('Puppeteer Configuration:', {
+            args: chrome.args,
+            executablePath: await chrome.executablePath,
+            headless: chrome.headless
+        });
+
         // Launch browser with special configuration for serverless
-        const browser = await puppeteer.launch({
+        browser = await puppeteer.launch({
             args: chrome.args,
             executablePath: await chrome.executablePath,
             headless: chrome.headless,
@@ -60,14 +68,21 @@ export default async function handler(req, res) {
             }));
         });
 
-        await browser.close();
-
         return res.status(200).json({ classes });
     } catch (error) {
-        console.error('Error:', error);
+        console.error('Detailed Error:', {
+            message: error.message,
+            stack: error.stack,
+            name: error.name
+        });
         return res.status(500).json({
             error: 'Failed to fetch class data',
-            message: error.message
+            message: error.message,
+            details: error.stack
         });
+    } finally {
+        if (browser) {
+            await browser.close();
+        }
     }
 }
