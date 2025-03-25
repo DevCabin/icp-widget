@@ -2,6 +2,14 @@ const puppeteer = require('puppeteer-core');
 const chrome = require('@sparticuz/chromium');
 
 export default async function handler(req, res) {
+    console.log('Render endpoint received request:', {
+        method: req.method,
+        url: req.url,
+        query: req.query,
+        headers: req.headers,
+        timestamp: new Date().toISOString()
+    });
+
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -15,13 +23,22 @@ export default async function handler(req, res) {
     }
 
     if (req.method !== 'GET') {
+        console.log('Method not allowed:', req.method);
         return res.status(405).send('Method not allowed');
     }
 
     const { accountName, param1, param2, param3, param4 } = req.query;
+    console.log('Processing request with parameters:', {
+        accountName,
+        param1,
+        param2,
+        param3,
+        param4
+    });
 
     if (!accountName) {
-        return res.status(400).send('Account name is required');
+        console.log('Missing required parameter: accountName');
+        return res.status(400).send('Missing required parameter: accountName');
     }
 
     let browser = null;

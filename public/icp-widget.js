@@ -123,15 +123,19 @@
 
             // Create and configure iframe
             const iframe = document.createElement('iframe');
-            iframe.style.cssText = `
-                width: 100%;
-                height: 800px;
-                border: none;
-                background: white;
-                border-radius: 8px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-            `;
-            iframe.src = `https://icp-widget.vercel.app/api/render?${params}`;
+            iframe.style.width = '100%';
+            iframe.style.height = '600px'; // Initial height
+            iframe.style.border = 'none';
+            iframe.style.background = '#ffffff';
+            iframe.style.borderRadius = '8px';
+            iframe.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
+            
+            // Log the full URL we're about to request
+            const fullUrl = `https://icp-widget.vercel.app/api/render?${params}`;
+            console.log('Widget Request URL:', fullUrl);
+            console.log('Widget Request Parameters:', Object.fromEntries(new URLSearchParams(params)));
+            
+            iframe.src = fullUrl;
 
             // Listen for height updates from iframe
             window.addEventListener('message', (event) => {
