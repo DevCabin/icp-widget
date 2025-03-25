@@ -62,7 +62,12 @@ export default async function handler(req, res) {
             console.log('Viewport set');
 
             // Navigate to the page
-            const url = `https://portal.iclasspro.com/${accountName}/classes`;
+            let url = `https://portal.iclasspro.com/${accountName}/classes`;
+            if (param1) url += `?${param1}`;
+            if (param2) url += `${param1 ? '&' : '?'}${param2}`;
+            if (param3) url += `&${param3}`;
+            if (param4) url += `&${param4}`;
+            
             console.log('Navigating to page:', url);
             await page.goto(url, {
                 waitUntil: 'networkidle0',
@@ -75,24 +80,7 @@ export default async function handler(req, res) {
             await page.waitForSelector('article.card .card-body', { timeout: 10000 });
             console.log('Content loaded');
 
-            // Apply filters if provided
-            if (param1) {
-                console.log('Applying filter 1:', param1);
-                await applyFilter(page, param1);
-            }
-            if (param2) {
-                console.log('Applying filter 2:', param2);
-                await applyFilter(page, param2);
-            }
-            if (param3) {
-                console.log('Applying filter 3:', param3);
-                await applyFilter(page, param3);
-            }
-            if (param4) {
-                console.log('Applying filter 4:', param4);
-                await applyFilter(page, param4);
-            }
-
+            // Remove the filter application since we're using URL parameters
             // Wait for any loading states to complete
             console.log('Waiting for loading states to complete...');
             await page.waitForTimeout(2000);
