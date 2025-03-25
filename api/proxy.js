@@ -13,6 +13,15 @@ export default async function handler(req, res) {
     }
 
     try {
+        // Construct the URL with query parameters
+        let url = `https://portal.iclasspro.com/${accountName}/classes`;
+        if (param1) url += `?${param1}`;
+        if (param2) url += `${param1 ? '&' : '?'}${param2}`;
+        if (param3) url += `&${param3}`;
+        if (param4) url += `&${param4}`;
+
+        console.log('Fetching URL:', url);
+
         // Launch browser with special configuration for serverless
         const browser = await puppeteer.launch({
             args: chrome.args,
@@ -27,17 +36,16 @@ export default async function handler(req, res) {
         await page.setViewport({ width: 1280, height: 800 });
 
         // Navigate to the page
-        const url = `https://app.iclasspro.com/portal/${accountName}/classes`;
         await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
 
         // Wait for the classes to load
-        await page.waitForSelector('.class-list', { timeout: 10000 });
+        await page.waitForSelector('article.card .card-body', { timeout: 10000 });
 
         // Get the classes HTML
         const classes = await page.evaluate(() => {
-            const classElements = document.querySelectorAll('.class-list .class-item');
-            return Array.from(classElements).map(el => ({
-                html: el.outerHTML
+            const cards = document.querySelectorAll('article.card .card-body');
+            return Array.from(cards).map(card => ({
+                html: card.outerHTML
             }));
         });
 
