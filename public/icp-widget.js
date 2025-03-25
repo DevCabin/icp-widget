@@ -132,10 +132,13 @@
                 box-shadow: 0 2px 4px rgba(0,0,0,0.05);
             `;
             iframe.src = `https://icp-widget.vercel.app/api/render?${params}`;
-            iframe.onload = () => {
-                // Adjust iframe height based on content
-                iframe.style.height = iframe.contentWindow.document.body.scrollHeight + 'px';
-            };
+
+            // Listen for height updates from iframe
+            window.addEventListener('message', (event) => {
+                if (event.data.type === 'iframeHeight') {
+                    iframe.style.height = event.data.height + 'px';
+                }
+            });
 
             // Replace loading animation with iframe
             widgetContainer.innerHTML = '';

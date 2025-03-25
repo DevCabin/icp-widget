@@ -6,6 +6,7 @@ export default async function handler(req, res) {
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
     res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
+    res.setHeader('Content-Type', 'text/html');
 
     // Handle preflight requests
     if (req.method === 'OPTIONS') {
@@ -14,13 +15,13 @@ export default async function handler(req, res) {
     }
 
     if (req.method !== 'GET') {
-        return res.status(405).json({ error: 'Method not allowed' });
+        return res.status(405).send('Method not allowed');
     }
 
     const { accountName, param1, param2, param3, param4 } = req.query;
 
     if (!accountName) {
-        return res.status(400).json({ error: 'Account name is required' });
+        return res.status(400).send('Account name is required');
     }
 
     let browser = null;
@@ -93,12 +94,36 @@ export default async function handler(req, res) {
                         background: white;
                         box-shadow: 0 2px 4px rgba(0,0,0,0.05);
                     }
+                    img {
+                        max-width: 100%;
+                        height: auto;
+                    }
+                    a {
+                        color: #0066cc;
+                        text-decoration: none;
+                    }
+                    a:hover {
+                        text-decoration: underline;
+                    }
                 </style>
             </head>
             <body>
                 <main>
                     ${html}
                 </main>
+                <script>
+                    // Send height to parent window
+                    function updateHeight() {
+                        window.parent.postMessage({
+                            type: 'iframeHeight',
+                            height: document.body.scrollHeight
+                        }, '*');
+                    }
+                    
+                    // Update height on load and resize
+                    window.addEventListener('load', updateHeight);
+                    window.addEventListener('resize', updateHeight);
+                </script>
             </body>
             </html>
         `);
