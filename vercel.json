@@ -3,6 +3,15 @@
   "public": true,
   "routes": [
     {
+      "src": "/icp-widget.js",
+      "dest": "/public/icp-widget.js",
+      "headers": {
+        "Access-Control-Allow-Origin": "*",
+        "Content-Type": "application/javascript; charset=utf-8",
+        "Cache-Control": "no-cache"
+      }
+    },
+    {
       "src": "/api/proxy",
       "methods": ["GET", "OPTIONS"],
       "headers": {
@@ -11,5 +20,9 @@
         "Access-Control-Allow-Headers": "Content-Type"
       }
     }
+  ],
+  "builds": [
+    { "src": "public/**/*", "use": "@vercel/static" },
+    { "src": "api/**/*.js", "use": "@vercel/node" }
   ]
 }
