@@ -1,5 +1,5 @@
-import axios from 'axios';
-import cheerio from 'cheerio';
+import puppeteer from 'puppeteer-core';
+import chrome from '@sparticuz/chromium';
 
 export default async function handler(req, res) {
     // Log the incoming request
@@ -41,80 +41,99 @@ export default async function handler(req, res) {
         if (param4) params.append(param4.split('=')[0], param4.split('=')[1]);
 
         const url = `${baseUrl}?${params.toString()}`;
-        console.log('Fetching URL:', url);
+        console.log('Loading URL:', url);
 
-        // Browser-like headers
-        const headers = {
-            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
-            'Accept-Language': 'en-US,en;q=0.9',
-            'Accept-Encoding': 'gzip, deflate, br',
-            'Connection': 'keep-alive',
-            'Upgrade-Insecure-Requests': '1',
-            'Sec-Fetch-Dest': 'document',
-            'Sec-Fetch-Mode': 'navigate',
-            'Sec-Fetch-Site': 'none',
-            'Sec-Fetch-User': '?1',
-            'Cache-Control': 'no-cache',
-            'Pragma': 'no-cache'
-        };
-
-        // Make a single request with a longer timeout
-        console.log('Making request to IClassPro...');
-        const startTime = Date.now();
-        
-        let response;
-        try {
-            response = await axios.get(url, {
-                headers,
-                timeout: 8000, // 8 second timeout
-                validateStatus: function (status) {
-                    return status >= 200 && status < 500;
-                }
-            });
-        } catch (error) {
-            console.error('Axios request failed:', error.message);
-            throw new Error(`Failed to fetch from IClassPro: ${error.message}`);
-        }
-
-        console.log('Response received after', Date.now() - startTime, 'ms:', {
-            status: response.status,
-            statusText: response.statusText,
-            headers: response.headers,
-            dataLength: response.data.length,
-            firstChars: response.data.substring(0, 200)
+        // Launch browser
+        console.log('Launching browser...');
+        const browser = await puppeteer.launch({
+            args: chrome.args,
+            executablePath: await chrome.executablePath,
+            headless: chrome.headless,
+            ignoreHTTPSErrors: true
         });
 
-        if (!response.data || typeof response.data !== 'string') {
-            throw new Error('Invalid response data from IClassPro');
-        }
-
-        // Load the HTML into cheerio
-        console.log('Loading HTML into cheerio...');
-        let $;
         try {
-            $ = cheerio.load(response.data);
-        } catch (error) {
-            console.error('Cheerio load failed:', error.message);
-            throw new Error('Failed to parse HTML response');
-        }
+            // Create new page
+            console.log('Creating new page...');
+            const page = await browser.newPage();
 
-        // Extract the card bodies
-        console.log('Extracting card bodies...');
-        let cardBodies;
-        try {
-            cardBodies = $('.card-body').map((i, el) => $(el).html()).get();
-        } catch (error) {
-            console.error('Card body extraction failed:', error.message);
-            throw new Error('Failed to extract card bodies');
-        }
+            // Set viewport
+            await page.setViewport({ width: 1280, height: 800 });
 
-        console.log(`Found ${cardBodies.length} card bodies`);
+            // Set user agent
+            await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
 
-        // If no card bodies found, return a loading state
-        if (!cardBodies || cardBodies.length === 0) {
-            console.log('No card bodies found, returning loading state');
-            const loadingHtml = `
+            // Navigate to URL
+            console.log('Navigating to URL...');
+            await page.goto(url, { waitUntil: 'networkidle0', timeout: 10000 });
+
+            // Wait for card bodies to appear
+            console.log('Waiting for card bodies...');
+            await page.waitForSelector('.card-body', { timeout: 10000 });
+
+            // Extract card bodies
+            console.log('Extracting card bodies...');
+            const cardBodies = await page.evaluate(() => {
+                const cards = document.querySelectorAll('.card-body');
+                return Array.from(cards).map(card => card.innerHTML);
+            });
+
+            console.log(`Found ${cardBodies.length} card bodies`);
+
+            // If no card bodies found, return a loading state
+            if (!cardBodies || cardBodies.length === 0) {
+                console.log('No card bodies found, returning loading state');
+                const loadingHtml = `
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                        <meta charset="utf-8">
+                        <meta name="viewport" content="width=device-width, initial-scale=1">
+                        <style>
+                            body {
+                                font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                                margin: 0;
+                                padding: 20px;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                min-height: 200px;
+                                background: #f5f5f5;
+                            }
+                            .loading-container {
+                                text-align: center;
+                                padding: 20px;
+                                background: white;
+                                border-radius: 8px;
+                                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                            }
+                            .loading-message {
+                                color: #666;
+                                font-size: 18px;
+                                margin-bottom: 10px;
+                            }
+                            .loading-details {
+                                color: #999;
+                                font-size: 14px;
+                            }
+                        </style>
+                    </head>
+                    <body>
+                        <div class="loading-container">
+                            <div class="loading-message">Loading classes...</div>
+                            <div class="loading-details">Please wait while we fetch the latest schedule</div>
+                        </div>
+                    </body>
+                    </html>
+                `;
+
+                res.setHeader('Content-Type', 'text/html');
+                res.status(200).send(loadingHtml);
+                return;
+            }
+
+            // Create a clean HTML response
+            const html = `
                 <!DOCTYPE html>
                 <html>
                 <head>
@@ -125,119 +144,62 @@ export default async function handler(req, res) {
                             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
                             margin: 0;
                             padding: 20px;
-                            display: flex;
-                            align-items: center;
-                            justify-content: center;
-                            min-height: 200px;
                             background: #f5f5f5;
                         }
-                        .loading-container {
-                            text-align: center;
-                            padding: 20px;
+                        .card-body {
                             background: white;
                             border-radius: 8px;
+                            padding: 20px;
+                            margin-bottom: 20px;
                             box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                         }
-                        .loading-message {
-                            color: #666;
-                            font-size: 18px;
-                            margin-bottom: 10px;
+                        img {
+                            max-width: 100%;
+                            height: auto;
+                            border-radius: 4px;
                         }
-                        .loading-details {
-                            color: #999;
-                            font-size: 14px;
+                        a {
+                            color: #007bff;
+                            text-decoration: none;
+                        }
+                        a:hover {
+                            text-decoration: underline;
                         }
                     </style>
                 </head>
                 <body>
-                    <div class="loading-container">
-                        <div class="loading-message">Loading classes...</div>
-                        <div class="loading-details">Please wait while we fetch the latest schedule</div>
-                    </div>
+                    ${cardBodies.join('\n')}
+                    <script>
+                        // Send height to parent window
+                        function updateHeight() {
+                            const height = document.body.scrollHeight;
+                            window.parent.postMessage({ type: 'iframeHeight', height }, '*');
+                        }
+                        
+                        // Update height on load and when content changes
+                        window.addEventListener('load', updateHeight);
+                        const observer = new MutationObserver(updateHeight);
+                        observer.observe(document.body, { childList: true, subtree: true });
+                    </script>
                 </body>
                 </html>
             `;
 
+            // Send the response
             res.setHeader('Content-Type', 'text/html');
-            res.status(200).send(loadingHtml);
-            return;
+            res.status(200).send(html);
+
+        } finally {
+            // Close browser
+            console.log('Closing browser...');
+            await browser.close();
         }
-
-        // Create a clean HTML response
-        const html = `
-            <!DOCTYPE html>
-            <html>
-            <head>
-                <meta charset="utf-8">
-                <meta name="viewport" content="width=device-width, initial-scale=1">
-                <style>
-                    body {
-                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-                        margin: 0;
-                        padding: 20px;
-                        background: #f5f5f5;
-                    }
-                    .card-body {
-                        background: white;
-                        border-radius: 8px;
-                        padding: 20px;
-                        margin-bottom: 20px;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                    }
-                    img {
-                        max-width: 100%;
-                        height: auto;
-                        border-radius: 4px;
-                    }
-                    a {
-                        color: #007bff;
-                        text-decoration: none;
-                    }
-                    a:hover {
-                        text-decoration: underline;
-                    }
-                </style>
-            </head>
-            <body>
-                ${cardBodies.join('\n')}
-                <script>
-                    // Send height to parent window
-                    function updateHeight() {
-                        const height = document.body.scrollHeight;
-                        window.parent.postMessage({ type: 'iframeHeight', height }, '*');
-                    }
-                    
-                    // Update height on load and when content changes
-                    window.addEventListener('load', updateHeight);
-                    const observer = new MutationObserver(updateHeight);
-                    observer.observe(document.body, { childList: true, subtree: true });
-                </script>
-            </body>
-            </html>
-        `;
-
-        // Send the response
-        res.setHeader('Content-Type', 'text/html');
-        res.status(200).send(html);
 
     } catch (error) {
         console.error('Render endpoint error:', error);
         console.error('Error details:', {
             message: error.message,
-            code: error.code,
-            response: error.response ? {
-                status: error.response.status,
-                statusText: error.response.statusText,
-                data: error.response.data,
-                headers: error.response.headers
-            } : null,
-            stack: error.stack,
-            config: error.config ? {
-                url: error.config.url,
-                method: error.config.method,
-                headers: error.config.headers,
-                timeout: error.config.timeout
-            } : null
+            stack: error.stack
         });
         
         // Send a user-friendly error response
