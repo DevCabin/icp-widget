@@ -9,8 +9,12 @@
   },
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1"
+      "src": "/test",
+      "dest": "/api/test.js"
+    },
+    {
+      "src": "/render",
+      "dest": "/api/render.js"
     }
   ]
 }
