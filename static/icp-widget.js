@@ -1,7 +1,28 @@
 (function() {
+    const script = document.currentScript;
+    const config = {
+        containerId: script.getAttribute("data-container-id") || "icp-widget-container",
+        accountName: script.getAttribute("data-account-name"),
+        param1: script.getAttribute("data-param1"),
+        param2: script.getAttribute("data-param2"),
+        param3: script.getAttribute("data-param3"),
+        param4: script.getAttribute("data-param4")
+    };
+
+    // Validate required parameters
+    if (!config.accountName || !config.param1 || !config.param2) {
+        console.error("IClassPro Widget: Missing required parameters. Please provide data-account-name, data-param1, and data-param2.");
+        return;
+    }
+
+    // Construct the portal URL with parameters
+    let portalUrl = `https://portal.iclasspro.com/${config.accountName}/classes?genders=${config.param1}&programs=${config.param2}`;
+    if (config.param3) portalUrl += `&${config.param3}`;
+    if (config.param4) portalUrl += `&${config.param4}`;
+
     // Create the widget container
     const widgetContainer = document.createElement('div');
-    widgetContainer.id = 'icp-widget-container';
+    widgetContainer.id = config.containerId;
     widgetContainer.style.cssText = `
         font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
         max-width: 800px;
@@ -11,40 +32,45 @@
 
     // Add loading state
     widgetContainer.innerHTML = '<div style="text-align: center; padding: 20px;">Loading classes...</div>';
-    document.currentScript.parentNode.insertBefore(widgetContainer, document.currentScript);
+    script.parentNode.insertBefore(widgetContainer, script);
 
-    // Function to fetch and display classes
+    // Function to render the classes in our widget
+    function renderClasses(classes) {
+        if (classes && classes.length > 0) {
+            const classesHtml = classes.map(cls => `
+                <div style="
+                    border: 1px solid #eee;
+                    border-radius: 8px;
+                    padding: 15px;
+                    margin-bottom: 15px;
+                    background: white;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                ">
+                    ${cls.html}
+                </div>
+            `).join('');
+
+            widgetContainer.innerHTML = `
+                <h2 style="text-align: center; margin-bottom: 20px; color: #333;">Available Classes</h2>
+                ${classesHtml}
+            `;
+        } else {
+            widgetContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">No classes available at the moment.</div>';
+        }
+    }
+
+    // Function to load classes via proxy
     async function loadClasses() {
         try {
-            const response = await fetch('https://icp-widget-my2b29fg3-devcabins-projects.vercel.app/api/proxy');
+            const proxyUrl = `/api/proxy?url=${encodeURIComponent(portalUrl)}`;
+            const response = await fetch(proxyUrl);
             const data = await response.json();
             
-            if (data && data.classes) {
-                const classesHtml = data.classes.map(cls => `
-                    <div style="
-                        border: 1px solid #eee;
-                        border-radius: 8px;
-                        padding: 15px;
-                        margin-bottom: 15px;
-                        background: white;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
-                    ">
-                        <h3 style="margin: 0 0 10px 0; color: #333;">${cls.name}</h3>
-                        <p style="margin: 0; color: #666;">${cls.description || 'No description available'}</p>
-                        <div style="margin-top: 10px; color: #888; font-size: 0.9em;">
-                            <span>${cls.capacity} spots</span> • 
-                            <span>${cls.duration} minutes</span>
-                        </div>
-                    </div>
-                `).join('');
-
-                widgetContainer.innerHTML = `
-                    <h2 style="text-align: center; margin-bottom: 20px; color: #333;">Available Classes</h2>
-                    ${classesHtml}
-                `;
-            } else {
-                widgetContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">No classes available at the moment.</div>';
+            if (data.error) {
+                throw new Error(data.error);
             }
+            
+            renderClasses(data.classes);
         } catch (error) {
             console.error('Error loading classes:', error);
             widgetContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #ff4444;">Error loading classes. Please try again later.</div>';

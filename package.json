@@ -1,1 +1,1 @@
-{"name":"icp-widget","version":"1.0.0","description":"IClassPro Class Widget","main":"public/icp-widget.js","scripts":{"dev":"vercel dev","deploy":"vercel deploy"},"dependencies":{},"devDependencies":{"vercel":"^32.0.0"}}
+{"name":"icp-widget","version":"1.0.0","description":"IClassPro Class Widget","main":"public/icp-widget.js","scripts":{"dev":"vercel dev","deploy":"vercel deploy"},"dependencies":{"chrome-aws-lambda":"^10.1.0","puppeteer-core":"^10.1.0"},"devDependencies":{"vercel":"^32.0.0"}}
