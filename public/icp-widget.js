@@ -103,7 +103,18 @@
     animateIcons();
 
     // Start the countdown timer
-    const timerInterval = setInterval(updateTimer, 10);
+    let timeLeft = 5000; // 5 seconds
+    const timerInterval = setInterval(() => {
+        timeLeft -= 10;
+        timerElement.textContent = timeLeft;
+        if (timeLeft <= 0) {
+            clearInterval(timerInterval);
+            timerElement.textContent = '0';
+            loadContent();
+        }
+    }, 10);
+
+    // Start the countdown timer
     const iconInterval = setInterval(animateIcons, 1000);
 
     // Wait for the delay

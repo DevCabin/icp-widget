@@ -66,7 +66,7 @@ export default async function handler(req, res) {
         
         const response = await axios.get(url, {
             headers,
-            timeout: 25000, // 25 second timeout
+            timeout: 8000, // 8 second timeout
             validateStatus: function (status) {
                 return status >= 200 && status < 500;
             }
