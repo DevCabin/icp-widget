@@ -1,5 +1,5 @@
-const puppeteer = require('puppeteer-core');
-const chrome = require('@sparticuz/chromium');
+import puppeteer from 'puppeteer-core';
+import chromium from '@sparticuz/chromium';
 
 export default async function handler(req, res) {
     console.log('Render endpoint received request:', {
@@ -45,13 +45,13 @@ export default async function handler(req, res) {
     try {
         // Launch Puppeteer
         console.log('Launching Puppeteer...');
-        const executablePath = await chrome.executablePath;
+        const executablePath = await chromium.executablePath;
         console.log('Chrome executable path:', executablePath);
         
-        const browser = await puppeteer.launch({
+        browser = await puppeteer.launch({
             headless: 'new',
-            args: chrome.args,
-            defaultViewport: chrome.defaultViewport,
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
             executablePath: executablePath,
             ignoreHTTPSErrors: true
         });
@@ -86,7 +86,6 @@ export default async function handler(req, res) {
             await page.waitForSelector('article.card .card-body', { timeout: 10000 });
             console.log('Content loaded');
 
-            // Remove the filter application since we're using URL parameters
             // Wait for any loading states to complete
             console.log('Waiting for loading states to complete...');
             await page.waitForTimeout(2000);
@@ -107,11 +106,12 @@ export default async function handler(req, res) {
             return res.status(200).send(content);
         } catch (error) {
             console.error('Error during page processing:', error);
-            await browser.close();
+            if (browser) await browser.close();
             return res.status(500).send(`Error processing page: ${error.message}`);
         }
     } catch (error) {
         console.error('Error launching browser:', error);
+        if (browser) await browser.close();
         return res.status(500).send(`Error launching browser: ${error.message}`);
     }
 } 
