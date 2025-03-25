@@ -19,12 +19,46 @@
         padding: 20px;
     `;
 
-    // Add loading state
-    widgetContainer.innerHTML = '<div style="text-align: center; padding: 20px;">Loading classes...</div>';
-    script.parentNode.insertBefore(widgetContainer, script);
+    // Add fun loading animation
+    const loadingEmojis = ['🤸', '🎪', '🌟'];
+    let currentEmojiIndex = 0;
+    
+    function updateLoadingAnimation() {
+        const emojis = loadingEmojis.map((emoji, index) => 
+            `<span style="
+                font-size: 24px;
+                opacity: ${index === currentEmojiIndex ? '1' : '0.3'};
+                transition: opacity 0.3s ease;
+                margin: 0 5px;
+            ">${emoji}</span>`
+        ).join('');
+
+        widgetContainer.innerHTML = `
+            <div style="
+                text-align: center;
+                padding: 40px 20px;
+            ">
+                <div style="
+                    font-size: 18px;
+                    color: #666;
+                    margin-bottom: 20px;
+                ">Loading your classes</div>
+                <div>${emojis}</div>
+            </div>
+        `;
+
+        currentEmojiIndex = (currentEmojiIndex + 1) % loadingEmojis.length;
+    }
+
+    // Start loading animation
+    updateLoadingAnimation();
+    const loadingInterval = setInterval(updateLoadingAnimation, 500);
 
     // Function to render the classes
     function renderClasses(classes) {
+        // Clear loading animation
+        clearInterval(loadingInterval);
+
         if (classes && classes.length > 0) {
             const classesHtml = classes.map(cls => `
                 <div style="
@@ -44,7 +78,16 @@
                 ${classesHtml}
             `;
         } else {
-            widgetContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #666;">No classes available at the moment.</div>';
+            widgetContainer.innerHTML = `
+                <div style="
+                    text-align: center;
+                    padding: 40px 20px;
+                    color: #666;
+                    font-size: 18px;
+                ">
+                    No classes available at the moment 🤔
+                </div>
+            `;
         }
     }
 
@@ -59,7 +102,10 @@
             if (config.param3) params.append('param3', config.param3);
             if (config.param4) params.append('param4', config.param4);
 
-            const response = await fetch(`https://icp-widget-53os27sci-devcabins-projects.vercel.app/api/proxy?${params}`);
+            // Initial delay to let Angular load
+            await new Promise(resolve => setTimeout(resolve, 3000));
+
+            const response = await fetch(`https://icp-widget.vercel.app/api/proxy?${params}`);
             const data = await response.json();
             
             if (data.error) {
@@ -68,9 +114,25 @@
             
             renderClasses(data.classes);
         } catch (error) {
-            widgetContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #ff4444;">Error loading classes. Please try again later.</div>';
+            clearInterval(loadingInterval);
+            widgetContainer.innerHTML = `
+                <div style="
+                    text-align: center;
+                    padding: 40px 20px;
+                    color: #ff4444;
+                    font-size: 18px;
+                ">
+                    Error loading classes 😢<br>
+                    <span style="font-size: 14px; color: #666; margin-top: 10px; display: block;">
+                        Please try again later
+                    </span>
+                </div>
+            `;
         }
     }
+
+    // Add the container to the page
+    script.parentNode.insertBefore(widgetContainer, script);
 
     // Load classes when the widget is initialized
     loadClasses();
