@@ -1,1 +1,1 @@
-{"version":2,"public":true}
+{"version":2,"public":true,"routes":[{"src":"/static/(.*)","headers":{"Access-Control-Allow-Origin":"*"}}]}
