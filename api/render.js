@@ -44,17 +44,28 @@ export default async function handler(req, res) {
         console.log('Fetching URL:', url);
 
         // Fetch the page content
+        console.log('Making request to IClassPro...');
         const response = await axios.get(url, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
             }
         });
+        console.log('Response received:', {
+            status: response.status,
+            statusText: response.statusText,
+            headers: response.headers,
+            dataLength: response.data.length,
+            firstChars: response.data.substring(0, 200) // First 200 chars for debugging
+        });
 
         // Load the HTML into cheerio
+        console.log('Loading HTML into cheerio...');
         const $ = cheerio.load(response.data);
 
         // Extract the card bodies
+        console.log('Extracting card bodies...');
         const cardBodies = $('.card-body').map((i, el) => $(el).html()).get();
+        console.log(`Found ${cardBodies.length} card bodies`);
 
         // Create a clean HTML response
         const html = `
@@ -115,6 +126,15 @@ export default async function handler(req, res) {
 
     } catch (error) {
         console.error('Render endpoint error:', error);
+        console.error('Error details:', {
+            message: error.message,
+            code: error.code,
+            response: error.response ? {
+                status: error.response.status,
+                statusText: error.response.statusText,
+                data: error.response.data
+            } : null
+        });
         
         // Send a user-friendly error response
         const errorHtml = `
@@ -164,4 +184,4 @@ export default async function handler(req, res) {
         res.setHeader('Content-Type', 'text/html');
         res.status(500).send(errorHtml);
     }
-} 
+}

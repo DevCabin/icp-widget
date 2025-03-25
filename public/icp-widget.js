@@ -79,7 +79,7 @@
     // Start the loading animation
     let currentIconIndex = 0;
     let startTime = Date.now();
-    const duration = 4000; // 4 seconds
+    const duration = 8000; // 8 seconds
 
     const updateTimer = () => {
         const elapsed = Date.now() - startTime;
@@ -104,7 +104,7 @@
     const iconInterval = setInterval(animateIcons, 1000);
 
     // Wait for the delay
-    setTimeout(() => {
+    setTimeout(async () => {
         clearInterval(timerInterval);
         clearInterval(iconInterval);
         console.log('Delay completed. Duration:', (Date.now() - startTime) / 1000, 'seconds');
@@ -132,24 +132,24 @@
 
                 // Create and configure iframe
                 const iframe = document.createElement('iframe');
-                iframe.style.width = '100%';
-                iframe.style.height = '600px'; // Initial height
-                iframe.style.border = 'none';
-                iframe.style.background = '#ffffff';
-                iframe.style.borderRadius = '8px';
-                iframe.style.boxShadow = '0 2px 4px rgba(0,0,0,0.1)';
-                
-                // Log the full URL we're about to request
-                const fullUrl = `https://icp-widget.vercel.app/api/render?${params}`;
-                console.log('Widget Request URL:', fullUrl);
-                console.log('Widget Request Parameters:', Object.fromEntries(new URLSearchParams(params)));
-                
-                iframe.src = fullUrl;
+                iframe.style.cssText = `
+                    width: 100%;
+                    height: 600px;
+                    border: none;
+                    background: white;
+                    border-radius: 8px;
+                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                `;
 
-                // Listen for height updates from iframe
+                // Set the iframe source
+                iframe.src = `https://icp-widget.vercel.app/api/render?${params}`;
+                console.log('Loading iframe with URL:', iframe.src);
+
+                // Listen for height updates from the iframe
                 window.addEventListener('message', (event) => {
                     if (event.data.type === 'iframeHeight') {
-                        iframe.style.height = event.data.height + 'px';
+                        console.log('Received height update:', event.data.height);
+                        iframe.style.height = `${event.data.height}px`;
                     }
                 });
 
@@ -162,14 +162,14 @@
                 widgetContainer.innerHTML = `
                     <div style="
                         text-align: center;
-                        padding: 40px 20px;
-                        color: #ff4444;
-                        font-size: 18px;
+                        padding: 20px;
+                        color: #dc3545;
+                        background: white;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
                     ">
-                        Error loading classes 😢<br>
-                        <span style="font-size: 14px; color: #666; margin-top: 10px; display: block;">
-                            Please try again later
-                        </span>
+                        <div style="font-size: 18px; margin-bottom: 10px;">Unable to load classes</div>
+                        <div style="font-size: 14px; color: #666;">Please try again later</div>
                     </div>
                 `;
             }
