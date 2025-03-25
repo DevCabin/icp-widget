@@ -16,14 +16,26 @@ export default async function handler(req, res) {
         const url = 'https://api.github.com/zen';
         console.log('Making request to:', url);
 
-        // Make request with detailed logging
+        // Make request with detailed logging and browser-like headers
         const response = await axios.get(url, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
                 'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
                 'Accept-Language': 'en-US,en;q=0.9',
+                'Accept-Encoding': 'gzip, deflate, br',
                 'Connection': 'keep-alive',
-                'Upgrade-Insecure-Requests': '1'
+                'Upgrade-Insecure-Requests': '1',
+                'Sec-Fetch-Dest': 'document',
+                'Sec-Fetch-Mode': 'navigate',
+                'Sec-Fetch-Site': 'none',
+                'Sec-Fetch-User': '?1',
+                'Cache-Control': 'max-age=0',
+                'Origin': 'http://localhost:3000',
+                'Referer': 'http://localhost:3000/',
+                'Host': new URL(url).host,
+                'sec-ch-ua': '"Chromium";v="122", "Not(A:Brand";v="24", "Google Chrome";v="122"',
+                'sec-ch-ua-mobile': '?0',
+                'sec-ch-ua-platform': '"macOS"'
             },
             timeout: 5000,
             validateStatus: function (status) {
@@ -86,6 +98,10 @@ export default async function handler(req, res) {
                         <pre>URL: ${url}
 Method: GET
 Timeout: 5000ms</pre>
+                    </div>
+                    <div class="section">
+                        <h2>Request Headers</h2>
+                        <pre>${JSON.stringify(response.config.headers, null, 2)}</pre>
                     </div>
                     <div class="section">
                         <h2>Response Status</h2>
