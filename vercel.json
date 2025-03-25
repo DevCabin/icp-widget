@@ -2,9 +2,15 @@
   "version": 2,
   "public": true,
   "functions": {
-    "api/render.js": {
+    "api/*.js": {
       "memory": 3008,
       "maxDuration": 30
     }
-  }
+  },
+  "routes": [
+    {
+      "src": "/api/(.*)",
+      "dest": "/api/$1"
+    }
+  ]
 }
