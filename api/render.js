@@ -73,6 +73,10 @@ export default async function handler(req, res) {
         console.log('Loading HTML into cheerio...');
         const $ = cheerio.load(response.data);
 
+        // Wait for 3 seconds to let Angular render
+        console.log('Waiting for Angular to render...');
+        await new Promise(resolve => setTimeout(resolve, 3000));
+
         // Extract the card bodies
         console.log('Extracting card bodies...');
         const cardBodies = $('.card-body').map((i, el) => $(el).html()).get();
