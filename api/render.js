@@ -43,10 +43,17 @@ export default async function handler(req, res) {
         const url = `${baseUrl}?${params.toString()}`;
         console.log('Loading URL:', url);
 
-        // Launch browser
+        // Launch browser with Vercel-specific configuration
         console.log('Launching browser...');
         const browser = await puppeteer.launch({
-            args: chrome.args,
+            args: [
+                ...chrome.args,
+                '--no-sandbox',
+                '--disable-setuid-sandbox',
+                '--disable-dev-shm-usage',
+                '--disable-accelerated-2d-canvas',
+                '--disable-gpu'
+            ],
             executablePath: await chrome.executablePath,
             headless: chrome.headless,
             ignoreHTTPSErrors: true
@@ -63,13 +70,13 @@ export default async function handler(req, res) {
             // Set user agent
             await page.setUserAgent('Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36');
 
-            // Navigate to URL
+            // Navigate to URL with increased timeout
             console.log('Navigating to URL...');
-            await page.goto(url, { waitUntil: 'networkidle0', timeout: 10000 });
+            await page.goto(url, { waitUntil: 'networkidle0', timeout: 15000 });
 
-            // Wait for card bodies to appear
+            // Wait for card bodies to appear with increased timeout
             console.log('Waiting for card bodies...');
-            await page.waitForSelector('.card-body', { timeout: 10000 });
+            await page.waitForSelector('.card-body', { timeout: 15000 });
 
             // Extract card bodies
             console.log('Extracting card bodies...');
