@@ -4,6 +4,7 @@ import cheerio from 'cheerio';
 export default async function handler(req, res) {
     // Log the incoming request
     console.log('Render endpoint called with query:', req.query);
+    console.log('Request headers:', req.headers);
 
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -61,15 +62,17 @@ export default async function handler(req, res) {
 
         // Make a single request with a longer timeout
         console.log('Making request to IClassPro...');
+        const startTime = Date.now();
+        
         const response = await axios.get(url, {
             headers,
-            timeout: 20000, // 20 second timeout
+            timeout: 25000, // 25 second timeout
             validateStatus: function (status) {
                 return status >= 200 && status < 500;
             }
         });
 
-        console.log('Response received:', {
+        console.log('Response received after', Date.now() - startTime, 'ms:', {
             status: response.status,
             statusText: response.statusText,
             headers: response.headers,
