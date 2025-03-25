@@ -47,7 +47,10 @@ export default async function handler(req, res) {
         console.log('Launching Puppeteer...');
         const browser = await puppeteer.launch({
             headless: 'new',
-            args: ['--no-sandbox', '--disable-setuid-sandbox']
+            args: chrome.args,
+            defaultViewport: chrome.defaultViewport,
+            executablePath: await chrome.executablePath,
+            ignoreHTTPSErrors: true
         });
         console.log('Puppeteer launched successfully');
 
