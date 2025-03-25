@@ -1,78 +1,54 @@
-const chromium = require('chrome-aws-lambda');
 const puppeteer = require('puppeteer-core');
+const chrome = require('@sparticuz/chromium');
 
-module.exports = async (req, res) => {
-    // Set CORS headers
-    res.setHeader('Access-Control-Allow-Origin', '*');
-    res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type');
-
-    // Handle preflight requests
-    if (req.method === 'OPTIONS') {
-        res.status(200).end();
-        return;
+export default async function handler(req, res) {
+    if (req.method !== 'GET') {
+        return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    // Get query parameters
     const { accountName, param1, param2, param3, param4 } = req.query;
 
-    // Validate required parameters
-    if (!accountName || !param1 || !param2) {
-        res.status(400).json({ 
-            error: 'Missing required parameters. Please provide accountName, param1, and param2.' 
-        });
-        return;
+    if (!accountName) {
+        return res.status(400).json({ error: 'Account name is required' });
     }
 
-    // Construct the URL
-    let url = `https://${accountName}.iclasspro.com/portal/classes?${param1}&${param2}`;
-    if (param3) url += `&${param3}`;
-    if (param4) url += `&${param4}`;
-
-    console.log('Fetching URL:', url);
-
-    let browser = null;
     try {
-        // Launch browser
-        browser = await puppeteer.launch({
-            args: chromium.args,
-            defaultViewport: chromium.defaultViewport,
-            executablePath: await chromium.executablePath,
-            headless: true
+        // Launch browser with special configuration for serverless
+        const browser = await puppeteer.launch({
+            args: chrome.args,
+            executablePath: await chrome.executablePath,
+            headless: chrome.headless,
+            ignoreHTTPSErrors: true,
         });
 
-        // Create new page
         const page = await browser.newPage();
         
-        // Navigate to URL
-        await page.goto(url, {
-            waitUntil: 'networkidle0',
-            timeout: 30000
-        });
+        // Set viewport
+        await page.setViewport({ width: 1280, height: 800 });
 
-        // Wait for content
-        await page.waitForSelector('article.card .card-body', { timeout: 10000 });
+        // Navigate to the page
+        const url = `https://app.iclasspro.com/portal/${accountName}/classes`;
+        await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
 
-        // Extract the HTML content
+        // Wait for the classes to load
+        await page.waitForSelector('.class-list', { timeout: 10000 });
+
+        // Get the classes HTML
         const classes = await page.evaluate(() => {
-            const cards = document.querySelectorAll('article.card .card-body');
-            return Array.from(cards).map(card => ({
-                html: card.innerHTML
+            const classElements = document.querySelectorAll('.class-list .class-item');
+            return Array.from(classElements).map(el => ({
+                html: el.outerHTML
             }));
         });
 
-        // Return the extracted content
-        res.json({ classes });
+        await browser.close();
 
+        return res.status(200).json({ classes });
     } catch (error) {
-        console.error('Proxy error:', error);
-        res.status(500).json({ 
+        console.error('Error:', error);
+        return res.status(500).json({
             error: 'Failed to fetch class data',
             message: error.message
         });
-    } finally {
-        if (browser) {
-            await browser.close();
-        }
     }
-};
+}
