@@ -59,36 +59,26 @@ export default async function handler(req, res) {
             'Pragma': 'no-cache'
         };
 
-        // Try up to 3 times with increasing delays
-        let response;
-        for (let attempt = 1; attempt <= 3; attempt++) {
-            try {
-                console.log(`Attempt ${attempt} of 3...`);
-                response = await axios.get(url, {
-                    headers,
-                    timeout: 15000, // 15 second timeout
-                    validateStatus: function (status) {
-                        return status >= 200 && status < 500;
-                    }
-                });
-
-                console.log(`Attempt ${attempt} response:`, {
-                    status: response.status,
-                    statusText: response.statusText,
-                    headers: response.headers,
-                    dataLength: response.data.length,
-                    firstChars: response.data.substring(0, 200)
-                });
-
-                if (response.status === 200) {
-                    break;
-                }
-            } catch (error) {
-                console.error(`Attempt ${attempt} failed:`, error.message);
-                if (attempt === 3) throw error;
-                // Wait longer between each attempt
-                await new Promise(resolve => setTimeout(resolve, attempt * 2000));
+        // Make a single request with a longer timeout
+        console.log('Making request to IClassPro...');
+        const response = await axios.get(url, {
+            headers,
+            timeout: 20000, // 20 second timeout
+            validateStatus: function (status) {
+                return status >= 200 && status < 500;
             }
+        });
+
+        console.log('Response received:', {
+            status: response.status,
+            statusText: response.statusText,
+            headers: response.headers,
+            dataLength: response.data.length,
+            firstChars: response.data.substring(0, 200)
+        });
+
+        if (response.status !== 200) {
+            throw new Error(`Received status ${response.status} from IClassPro`);
         }
 
         // Load the HTML into cheerio
@@ -98,10 +88,6 @@ export default async function handler(req, res) {
         // Wait for initial render
         console.log('Waiting for initial render (4s)...');
         await new Promise(resolve => setTimeout(resolve, 4000));
-
-        // Wait for Angular to render
-        console.log('Waiting for Angular to render (5s)...');
-        await new Promise(resolve => setTimeout(resolve, 5000));
 
         // Extract the card bodies
         console.log('Extracting card bodies...');
