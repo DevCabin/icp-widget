@@ -33,7 +33,7 @@ export default async function handler(req, res) {
         }
 
         // Construct the URL
-        const baseUrl = `https://www.${accountName}.iclasspro.com/portal/classes`;
+        const baseUrl = `https://portal.iclasspro.com/${accountName}/classes`;
         const params = new URLSearchParams();
         if (param1) params.append(param1.split('=')[0], param1.split('=')[1]);
         if (param2) params.append(param2.split('=')[0], param2.split('=')[1]);
