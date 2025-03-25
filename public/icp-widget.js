@@ -51,7 +51,6 @@
     // Function to load classes
     async function loadClasses() {
         try {
-            // Construct API URL with query parameters
             const params = new URLSearchParams({
                 accountName: config.accountName,
                 param1: config.param1,
@@ -69,7 +68,6 @@
             
             renderClasses(data.classes);
         } catch (error) {
-            console.error('Error loading classes:', error);
             widgetContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #ff4444;">Error loading classes. Please try again later.</div>';
         }
     }

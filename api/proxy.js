@@ -35,45 +35,34 @@ module.exports = async (req, res) => {
     try {
         // Launch browser
         browser = await puppeteer.launch({
-            args: [...chromium.args, '--disable-web-security'],
+            args: chromium.args,
             defaultViewport: chromium.defaultViewport,
             executablePath: await chromium.executablePath,
-            headless: true,
-            ignoreHTTPSErrors: true
+            headless: true
         });
 
         // Create new page
         const page = await browser.newPage();
         
-        // Navigate to URL and wait for content
+        // Navigate to URL
         await page.goto(url, {
             waitUntil: 'networkidle0',
             timeout: 30000
         });
 
-        // Wait for Angular to render (wait for specific elements)
+        // Wait for content
         await page.waitForSelector('article.card .card-body', { timeout: 10000 });
 
-        // Additional wait to ensure dynamic content is loaded
-        await page.waitForTimeout(2000);
-
         // Extract the HTML content
-        const classCards = await page.evaluate(() => {
+        const classes = await page.evaluate(() => {
             const cards = document.querySelectorAll('article.card .card-body');
             return Array.from(cards).map(card => ({
-                html: card.innerHTML,
-                // Optionally extract specific data if needed
-                title: card.querySelector('h3')?.textContent || '',
-                description: card.querySelector('p')?.textContent || ''
+                html: card.innerHTML
             }));
         });
 
         // Return the extracted content
-        res.json({ 
-            success: true,
-            classes: classCards,
-            timestamp: new Date().toISOString()
-        });
+        res.json({ classes });
 
     } catch (error) {
         console.error('Proxy error:', error);
