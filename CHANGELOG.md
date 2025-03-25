@@ -16,16 +16,6 @@ All notable changes to this project will be documented in this file.
 - Content extraction issues by waiting for dynamic content to load
 - Memory and timeout issues in Vercel environment
 
-## [0.1.0] - 2024-03-19
-
-### Added
-- Initial release
-- Basic widget functionality
-- Serverless API endpoint
-- Loading animation
-- Error handling
-- Responsive design
-
 ## [1.0.0] - 2024-03-25
 
 ### Changed
@@ -48,6 +38,16 @@ All notable changes to this project will be documented in this file.
 - Simple client-side display
 - Basic error handling
 - CORS support
+
+## [0.1.0] - 2024-03-19
+
+### Added
+- Initial release
+- Basic widget functionality
+- Serverless API endpoint
+- Loading animation
+- Error handling
+- Responsive design
 
 ### Technical Details
 
