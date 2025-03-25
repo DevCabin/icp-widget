@@ -78,9 +78,56 @@ export default async function handler(req, res) {
         const cardBodies = $('.card-body').map((i, el) => $(el).html()).get();
         console.log(`Found ${cardBodies.length} card bodies`);
 
+        // If no card bodies found, return a loading state
         if (cardBodies.length === 0) {
-            console.error('No card bodies found in the response');
-            throw new Error('No card bodies found in the response');
+            console.log('No card bodies found, returning loading state');
+            const loadingHtml = `
+                <!DOCTYPE html>
+                <html>
+                <head>
+                    <meta charset="utf-8">
+                    <meta name="viewport" content="width=device-width, initial-scale=1">
+                    <style>
+                        body {
+                            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                            margin: 0;
+                            padding: 20px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            min-height: 200px;
+                            background: #f5f5f5;
+                        }
+                        .loading-container {
+                            text-align: center;
+                            padding: 20px;
+                            background: white;
+                            border-radius: 8px;
+                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        }
+                        .loading-message {
+                            color: #666;
+                            font-size: 18px;
+                            margin-bottom: 10px;
+                        }
+                        .loading-details {
+                            color: #999;
+                            font-size: 14px;
+                        }
+                    </style>
+                </head>
+                <body>
+                    <div class="loading-container">
+                        <div class="loading-message">Loading classes...</div>
+                        <div class="loading-details">Please wait while we fetch the latest schedule</div>
+                    </div>
+                </body>
+                </html>
+            `;
+
+            res.setHeader('Content-Type', 'text/html');
+            res.status(200).send(loadingHtml);
+            return;
         }
 
         // Create a clean HTML response
