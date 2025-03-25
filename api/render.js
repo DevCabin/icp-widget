@@ -43,43 +43,61 @@ export default async function handler(req, res) {
         const url = `${baseUrl}?${params.toString()}`;
         console.log('Fetching URL:', url);
 
-        // Fetch the page content
-        console.log('Making request to IClassPro...');
-        const response = await axios.get(url, {
-            headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
-                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
-                'Accept-Language': 'en-US,en;q=0.5',
-                'Connection': 'keep-alive',
-                'Upgrade-Insecure-Requests': '1'
-            },
-            timeout: 10000, // 10 second timeout
-            validateStatus: function (status) {
-                return status >= 200 && status < 500; // Accept any status less than 500
+        // Browser-like headers
+        const headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/122.0.0.0 Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.7',
+            'Accept-Language': 'en-US,en;q=0.9',
+            'Accept-Encoding': 'gzip, deflate, br',
+            'Connection': 'keep-alive',
+            'Upgrade-Insecure-Requests': '1',
+            'Sec-Fetch-Dest': 'document',
+            'Sec-Fetch-Mode': 'navigate',
+            'Sec-Fetch-Site': 'none',
+            'Sec-Fetch-User': '?1',
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache'
+        };
+
+        // Try up to 3 times with increasing delays
+        let response;
+        for (let attempt = 1; attempt <= 3; attempt++) {
+            try {
+                console.log(`Attempt ${attempt} of 3...`);
+                response = await axios.get(url, {
+                    headers,
+                    timeout: 15000, // 15 second timeout
+                    validateStatus: function (status) {
+                        return status >= 200 && status < 500;
+                    }
+                });
+
+                console.log(`Attempt ${attempt} response:`, {
+                    status: response.status,
+                    statusText: response.statusText,
+                    headers: response.headers,
+                    dataLength: response.data.length,
+                    firstChars: response.data.substring(0, 200)
+                });
+
+                if (response.status === 200) {
+                    break;
+                }
+            } catch (error) {
+                console.error(`Attempt ${attempt} failed:`, error.message);
+                if (attempt === 3) throw error;
+                // Wait longer between each attempt
+                await new Promise(resolve => setTimeout(resolve, attempt * 2000));
             }
-        });
-
-        console.log('Response received:', {
-            status: response.status,
-            statusText: response.statusText,
-            headers: response.headers,
-            dataLength: response.data.length,
-            firstChars: response.data.substring(0, 200) // First 200 chars for debugging
-        });
-
-        // Check if we got a valid response
-        if (response.status !== 200) {
-            console.error('Received non-200 status:', response.status);
-            throw new Error(`Received status ${response.status} from IClassPro`);
         }
 
         // Load the HTML into cheerio
         console.log('Loading HTML into cheerio...');
         const $ = cheerio.load(response.data);
 
-        // Wait for 3 seconds to let Angular render
+        // Wait for Angular to render
         console.log('Waiting for Angular to render...');
-        await new Promise(resolve => setTimeout(resolve, 3000));
+        await new Promise(resolve => setTimeout(resolve, 5000));
 
         // Extract the card bodies
         console.log('Extracting card bodies...');
