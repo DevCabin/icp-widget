@@ -1,5 +1,5 @@
-import puppeteer from 'puppeteer-core';
-import chromium from '@sparticuz/chromium';
+import axios from 'axios';
+import cheerio from 'cheerio';
 
 export default async function handler(req, res) {
     console.log('Render endpoint received request:', {
@@ -41,74 +41,112 @@ export default async function handler(req, res) {
         return res.status(400).send('Missing required parameter: accountName');
     }
 
-    let browser = null;
     try {
-        // Launch Puppeteer
-        console.log('Launching Puppeteer...');
-        browser = await puppeteer.launch({
-            args: chromium.args,
-            defaultViewport: chromium.defaultViewport,
-            executablePath: await chromium.executablePath,
-            headless: true,
-            ignoreHTTPSErrors: true
+        // Construct the URL with parameters
+        let url = `https://portal.iclasspro.com/${accountName}/classes`;
+        if (param1) url += `?${param1}`;
+        if (param2) url += `${param1 ? '&' : '?'}${param2}`;
+        if (param3) url += `&${param3}`;
+        if (param4) url += `&${param4}`;
+        
+        console.log('Fetching URL:', url);
+        
+        // Fetch the page content
+        const { data } = await axios.get(url);
+        console.log('Page content fetched');
+
+        // Load the HTML into cheerio
+        const $ = cheerio.load(data);
+        console.log('HTML loaded into cheerio');
+
+        // Extract the card bodies
+        const cardBodies = [];
+        $('article.card .card-body').each((i, el) => {
+            cardBodies.push($(el).html());
         });
-        console.log('Puppeteer launched successfully');
+        console.log(`Found ${cardBodies.length} card bodies`);
 
-        try {
-            console.log('Creating new page...');
-            const page = await browser.newPage();
-            console.log('New page created');
+        // Create a clean HTML response
+        const html = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <style>
+                    body {
+                        margin: 0;
+                        padding: 0;
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                    }
+                    .card {
+                        border: 1px solid #eee;
+                        border-radius: 8px;
+                        padding: 15px;
+                        margin-bottom: 15px;
+                        background: white;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+                    }
+                    img {
+                        max-width: 100%;
+                        height: auto;
+                    }
+                    a {
+                        color: #0066cc;
+                        text-decoration: none;
+                    }
+                    a:hover {
+                        text-decoration: underline;
+                    }
+                </style>
+            </head>
+            <body>
+                <div class="cards">
+                    ${cardBodies.join('\n')}
+                </div>
+                <script>
+                    // Send height to parent window
+                    function updateHeight() {
+                        window.parent.postMessage({
+                            type: 'iframeHeight',
+                            height: document.body.scrollHeight
+                        }, '*');
+                    }
+                    
+                    // Update height on load and resize
+                    window.addEventListener('load', updateHeight);
+                    window.addEventListener('resize', updateHeight);
+                </script>
+            </body>
+            </html>
+        `;
 
-            // Set viewport
-            console.log('Setting viewport...');
-            await page.setViewport({ width: 1200, height: 800 });
-            console.log('Viewport set');
-
-            // Navigate to the page
-            let url = `https://portal.iclasspro.com/${accountName}/classes`;
-            if (param1) url += `?${param1}`;
-            if (param2) url += `${param1 ? '&' : '?'}${param2}`;
-            if (param3) url += `&${param3}`;
-            if (param4) url += `&${param4}`;
-            
-            console.log('Navigating to page:', url);
-            await page.goto(url, {
-                waitUntil: 'networkidle0',
-                timeout: 30000
-            });
-            console.log('Page navigation complete');
-
-            // Wait for the content to load
-            console.log('Waiting for content to load...');
-            await page.waitForSelector('article.card .card-body', { timeout: 10000 });
-            console.log('Content loaded');
-
-            // Wait for any loading states to complete
-            console.log('Waiting for loading states to complete...');
-            await page.waitForTimeout(2000);
-            console.log('Loading states complete');
-
-            // Get the content
-            console.log('Getting page content...');
-            const content = await page.content();
-            console.log('Page content retrieved');
-
-            // Clean up
-            console.log('Closing browser...');
-            await browser.close();
-            console.log('Browser closed');
-
-            // Send response
-            console.log('Sending response...');
-            return res.status(200).send(content);
-        } catch (error) {
-            console.error('Error during page processing:', error);
-            if (browser) await browser.close();
-            return res.status(500).send(`Error processing page: ${error.message}`);
-        }
+        // Send response
+        console.log('Sending response...');
+        return res.status(200).send(html);
     } catch (error) {
-        console.error('Error launching browser:', error);
-        if (browser) await browser.close();
-        return res.status(500).send(`Error launching browser: ${error.message}`);
+        console.error('Error processing request:', error);
+        return res.status(500).send(`
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <meta charset="utf-8">
+                <meta name="viewport" content="width=device-width, initial-scale=1">
+                <style>
+                    body {
+                        margin: 0;
+                        padding: 20px;
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                        text-align: center;
+                        color: #ff4444;
+                    }
+                </style>
+            </head>
+            <body>
+                <h2>Error loading classes 😢</h2>
+                <p>Please try again later</p>
+            </body>
+            </html>
+        `);
     }
 } 
