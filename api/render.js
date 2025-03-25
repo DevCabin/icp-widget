@@ -4,7 +4,6 @@ import cheerio from 'cheerio';
 export default async function handler(req, res) {
     // Log the incoming request
     console.log('Render endpoint called with query:', req.query);
-    console.log('Request headers:', req.headers);
 
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
@@ -64,13 +63,19 @@ export default async function handler(req, res) {
         console.log('Making request to IClassPro...');
         const startTime = Date.now();
         
-        const response = await axios.get(url, {
-            headers,
-            timeout: 8000, // 8 second timeout
-            validateStatus: function (status) {
-                return status >= 200 && status < 500;
-            }
-        });
+        let response;
+        try {
+            response = await axios.get(url, {
+                headers,
+                timeout: 8000, // 8 second timeout
+                validateStatus: function (status) {
+                    return status >= 200 && status < 500;
+                }
+            });
+        } catch (error) {
+            console.error('Axios request failed:', error.message);
+            throw new Error(`Failed to fetch from IClassPro: ${error.message}`);
+        }
 
         console.log('Response received after', Date.now() - startTime, 'ms:', {
             status: response.status,
@@ -80,25 +85,34 @@ export default async function handler(req, res) {
             firstChars: response.data.substring(0, 200)
         });
 
-        if (response.status !== 200) {
-            throw new Error(`Received status ${response.status} from IClassPro`);
+        if (!response.data || typeof response.data !== 'string') {
+            throw new Error('Invalid response data from IClassPro');
         }
 
         // Load the HTML into cheerio
         console.log('Loading HTML into cheerio...');
-        const $ = cheerio.load(response.data);
-
-        // Wait for initial render
-        console.log('Waiting for initial render (1s)...');
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        let $;
+        try {
+            $ = cheerio.load(response.data);
+        } catch (error) {
+            console.error('Cheerio load failed:', error.message);
+            throw new Error('Failed to parse HTML response');
+        }
 
         // Extract the card bodies
         console.log('Extracting card bodies...');
-        const cardBodies = $('.card-body').map((i, el) => $(el).html()).get();
+        let cardBodies;
+        try {
+            cardBodies = $('.card-body').map((i, el) => $(el).html()).get();
+        } catch (error) {
+            console.error('Card body extraction failed:', error.message);
+            throw new Error('Failed to extract card bodies');
+        }
+
         console.log(`Found ${cardBodies.length} card bodies`);
 
         // If no card bodies found, return a loading state
-        if (cardBodies.length === 0) {
+        if (!cardBodies || cardBodies.length === 0) {
             console.log('No card bodies found, returning loading state');
             const loadingHtml = `
                 <!DOCTYPE html>
