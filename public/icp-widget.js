@@ -46,8 +46,10 @@
     const iconsContainer = document.createElement('div');
     iconsContainer.style.cssText = `
         display: flex;
-        gap: 20px;
+        justify-content: center;
+        align-items: center;
         margin-bottom: 20px;
+        height: 60px;
     `;
 
     // Create three icons
@@ -55,9 +57,10 @@
         const iconElement = document.createElement('div');
         iconElement.textContent = icon;
         iconElement.style.cssText = `
-            font-size: 24px;
-            opacity: 0.3;
+            font-size: 48px;
+            opacity: 0;
             transition: opacity 0.3s ease;
+            position: absolute;
         `;
         iconsContainer.appendChild(iconElement);
         return iconElement;
@@ -91,7 +94,7 @@
 
     const animateIcons = () => {
         icons.forEach((icon, index) => {
-            icon.style.opacity = index === currentIconIndex ? '1' : '0.3';
+            icon.style.opacity = index === currentIconIndex ? '1' : '0';
         });
         currentIconIndex = (currentIconIndex + 1) % icons.length;
     };
