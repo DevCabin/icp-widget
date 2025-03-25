@@ -48,8 +48,13 @@ export default async function handler(req, res) {
         const response = await axios.get(url, {
             headers: {
                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+            },
+            timeout: 10000, // 10 second timeout
+            validateStatus: function (status) {
+                return status >= 200 && status < 500; // Accept any status less than 500
             }
         });
+
         console.log('Response received:', {
             status: response.status,
             statusText: response.statusText,
@@ -57,6 +62,12 @@ export default async function handler(req, res) {
             dataLength: response.data.length,
             firstChars: response.data.substring(0, 200) // First 200 chars for debugging
         });
+
+        // Check if we got a valid response
+        if (response.status !== 200) {
+            console.error('Received non-200 status:', response.status);
+            throw new Error(`Received status ${response.status} from IClassPro`);
+        }
 
         // Load the HTML into cheerio
         console.log('Loading HTML into cheerio...');
@@ -66,6 +77,11 @@ export default async function handler(req, res) {
         console.log('Extracting card bodies...');
         const cardBodies = $('.card-body').map((i, el) => $(el).html()).get();
         console.log(`Found ${cardBodies.length} card bodies`);
+
+        if (cardBodies.length === 0) {
+            console.error('No card bodies found in the response');
+            throw new Error('No card bodies found in the response');
+        }
 
         // Create a clean HTML response
         const html = `
@@ -133,7 +149,8 @@ export default async function handler(req, res) {
                 status: error.response.status,
                 statusText: error.response.statusText,
                 data: error.response.data
-            } : null
+            } : null,
+            stack: error.stack
         });
         
         // Send a user-friendly error response
