@@ -47,7 +47,11 @@ export default async function handler(req, res) {
         console.log('Making request to IClassPro...');
         const response = await axios.get(url, {
             headers: {
-                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36'
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36',
+                'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8',
+                'Accept-Language': 'en-US,en;q=0.5',
+                'Connection': 'keep-alive',
+                'Upgrade-Insecure-Requests': '1'
             },
             timeout: 10000, // 10 second timeout
             validateStatus: function (status) {
@@ -199,9 +203,16 @@ export default async function handler(req, res) {
             response: error.response ? {
                 status: error.response.status,
                 statusText: error.response.statusText,
-                data: error.response.data
+                data: error.response.data,
+                headers: error.response.headers
             } : null,
-            stack: error.stack
+            stack: error.stack,
+            config: error.config ? {
+                url: error.config.url,
+                method: error.config.method,
+                headers: error.config.headers,
+                timeout: error.config.timeout
+            } : null
         });
         
         // Send a user-friendly error response
