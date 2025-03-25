@@ -34,18 +34,16 @@ export default async function handler(req, res) {
 
         console.log('Fetching URL:', url);
 
-        // Log Puppeteer configuration
-        console.log('Puppeteer Configuration:', {
-            args: chrome.args,
-            executablePath: await chrome.executablePath,
-            headless: chrome.headless
-        });
+        // Get the Chrome executable path
+        const executablePath = await chrome.executablePath;
+        console.log('Chrome executable path:', executablePath);
 
         // Launch browser with special configuration for serverless
         browser = await puppeteer.launch({
-            args: chrome.args,
-            executablePath: await chrome.executablePath,
-            headless: chrome.headless,
+            args: [...chrome.args, '--hide-scrollbars', '--disable-web-security'],
+            defaultViewport: chrome.defaultViewport,
+            executablePath: executablePath,
+            headless: true,
             ignoreHTTPSErrors: true,
         });
 
