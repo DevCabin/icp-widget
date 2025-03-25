@@ -3,26 +3,12 @@
   "public": true,
   "routes": [
     {
-      "src": "/icp-widget.js",
-      "dest": "/static/icp-widget.js",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/javascript"
-      }
-    },
-    {
       "src": "/api/proxy",
       "methods": ["GET", "OPTIONS"],
       "headers": {
         "Access-Control-Allow-Origin": "*",
         "Access-Control-Allow-Methods": "GET, OPTIONS",
         "Access-Control-Allow-Headers": "Content-Type"
-      }
-    },
-    {
-      "src": "/static/(.*)",
-      "headers": {
-        "Access-Control-Allow-Origin": "*"
       }
     }
   ]
