@@ -123,7 +123,11 @@
             });
 
             // Initial delay to let Angular load (extended to 4 seconds)
+            console.log('Starting 4-second delay for Angular to load...');
+            const delayStart = Date.now();
             await new Promise(resolve => setTimeout(resolve, 4000));
+            const delayEnd = Date.now();
+            console.log(`Delay completed. Duration: ${(delayEnd - delayStart) / 1000} seconds`);
 
             const response = await fetch(`https://icp-widget.vercel.app/api/proxy?${params}`);
             console.log('Widget Response Status:', response.status);
