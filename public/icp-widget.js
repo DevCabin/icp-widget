@@ -122,10 +122,36 @@
                 fullUrl: `https://icp-widget.vercel.app/api/proxy?${params}`
             });
 
-            // Initial delay to let Angular load (extended to 4 seconds)
+            // Initial delay to let Angular load (4 seconds with countdown)
             console.log('Starting 4-second delay for Angular to load...');
             const delayStart = Date.now();
-            await new Promise(resolve => setTimeout(resolve, 4000));
+            
+            // Update loading message with countdown
+            for (let i = 4; i > 0; i--) {
+                widgetContainer.innerHTML = `
+                    <div style="
+                        text-align: center;
+                        padding: 40px 20px;
+                    ">
+                        <div style="
+                            font-size: 18px;
+                            color: #666;
+                            margin-bottom: 20px;
+                        ">Loading your classes (${i} seconds remaining)</div>
+                        <div>${loadingEmojis.map((emoji, index) => 
+                            `<span style="
+                                font-size: 24px;
+                                opacity: ${index === currentEmojiIndex ? '1' : '0.3'};
+                                transition: opacity 0.3s ease;
+                                margin: 0 5px;
+                            ">${emoji}</span>`
+                        ).join('')}</div>
+                    </div>
+                `;
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                currentEmojiIndex = (currentEmojiIndex + 1) % loadingEmojis.length;
+            }
+            
             const delayEnd = Date.now();
             console.log(`Delay completed. Duration: ${(delayEnd - delayStart) / 1000} seconds`);
 
