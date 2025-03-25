@@ -106,10 +106,12 @@
     let timeLeft = 5000; // 5 seconds
     const timerInterval = setInterval(() => {
         timeLeft -= 10;
-        timerElement.textContent = timeLeft;
+        const seconds = Math.floor(timeLeft / 1000);
+        const milliseconds = timeLeft % 1000;
+        timerElement.textContent = `${seconds}.${milliseconds.toString().padStart(3, '0')}`;
         if (timeLeft <= 0) {
             clearInterval(timerInterval);
-            timerElement.textContent = '0';
+            timerElement.textContent = '0.000';
             loadContent();
         }
     }, 10);
