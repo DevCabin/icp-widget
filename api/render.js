@@ -62,8 +62,9 @@ export default async function handler(req, res) {
             console.log('Viewport set');
 
             // Navigate to the page
-            console.log('Navigating to page:', `https://www.${accountName}.co/classes`);
-            await page.goto(`https://www.${accountName}.co/classes`, {
+            const url = `https://portal.iclasspro.com/${accountName}/classes`;
+            console.log('Navigating to page:', url);
+            await page.goto(url, {
                 waitUntil: 'networkidle0',
                 timeout: 30000
             });
@@ -71,7 +72,7 @@ export default async function handler(req, res) {
 
             // Wait for the content to load
             console.log('Waiting for content to load...');
-            await page.waitForSelector('.class-list', { timeout: 10000 });
+            await page.waitForSelector('article.card .card-body', { timeout: 10000 });
             console.log('Content loaded');
 
             // Apply filters if provided
