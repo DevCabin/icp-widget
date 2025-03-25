@@ -9,6 +9,16 @@
         param4: script.getAttribute("data-param4")
     };
 
+    // Log the widget configuration
+    console.log('Widget Configuration:', {
+        containerId: config.containerId,
+        accountName: config.accountName,
+        param1: config.param1,
+        param2: config.param2,
+        param3: config.param3,
+        param4: config.param4
+    });
+
     // Create the widget container
     const widgetContainer = document.createElement('div');
     widgetContainer.id = config.containerId;
@@ -116,10 +126,10 @@
             await new Promise(resolve => setTimeout(resolve, 4000));
 
             const response = await fetch(`https://icp-widget.vercel.app/api/proxy?${params}`);
-            const data = await response.json();
+            console.log('Widget Response Status:', response.status);
             
-            // Log the response data
-            console.log('Widget Response:', data);
+            const data = await response.json();
+            console.log('Widget Response Data:', data);
             
             if (data.error) {
                 throw new Error(data.error);
