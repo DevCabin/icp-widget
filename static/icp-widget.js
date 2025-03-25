@@ -9,6 +9,9 @@
         param4: script.getAttribute("data-param4")
     };
 
+    // Debug logging
+    console.log('IClassPro Widget: Initializing with config:', config);
+
     // Validate required parameters
     if (!config.accountName || !config.param1 || !config.param2) {
         console.error("IClassPro Widget: Missing required parameters. Please provide data-account-name, data-param1, and data-param2.");
@@ -16,9 +19,12 @@
     }
 
     // Construct the portal URL with parameters
-    let portalUrl = `https://portal.iclasspro.com/${config.accountName}/classes?genders=${config.param1}&programs=${config.param2}`;
+    let portalUrl = `https://${config.accountName}.iclasspro.com/portal/classes?genders=${config.param1}&programs=${config.param2}`;
     if (config.param3) portalUrl += `&${config.param3}`;
     if (config.param4) portalUrl += `&${config.param4}`;
+
+    // Debug logging
+    console.log('IClassPro Widget: Using portal URL:', portalUrl);
 
     // Create the widget container
     const widgetContainer = document.createElement('div');
@@ -36,6 +42,7 @@
 
     // Function to render the classes in our widget
     function renderClasses(classes) {
+        console.log('IClassPro Widget: Rendering classes:', classes);
         if (classes && classes.length > 0) {
             const classesHtml = classes.map(cls => `
                 <div style="
@@ -62,7 +69,9 @@
     // Function to load classes via proxy
     async function loadClasses() {
         try {
-            const proxyUrl = `/api/proxy?url=${encodeURIComponent(portalUrl)}`;
+            const proxyUrl = `https://icp-widget-53os27sci-devcabins-projects.vercel.app/api/proxy?url=${encodeURIComponent(portalUrl)}`;
+            console.log('IClassPro Widget: Fetching from proxy:', proxyUrl);
+            
             const response = await fetch(proxyUrl);
             const data = await response.json();
             
@@ -72,7 +81,7 @@
             
             renderClasses(data.classes);
         } catch (error) {
-            console.error('Error loading classes:', error);
+            console.error('IClassPro Widget: Error loading classes:', error);
             widgetContainer.innerHTML = '<div style="text-align: center; padding: 20px; color: #ff4444;">Error loading classes. Please try again later.</div>';
         }
     }
