@@ -89,8 +89,8 @@ export default async function handler(req, res) {
         const $ = cheerio.load(response.data);
 
         // Wait for initial render
-        console.log('Waiting for initial render (2s)...');
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        console.log('Waiting for initial render (1s)...');
+        await new Promise(resolve => setTimeout(resolve, 1000));
 
         // Extract the card bodies
         console.log('Extracting card bodies...');

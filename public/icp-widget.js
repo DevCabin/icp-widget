@@ -82,7 +82,7 @@
     // Start the loading animation
     let currentIconIndex = 0;
     let startTime = Date.now();
-    const duration = 8000; // 8 seconds
+    const duration = 5000; // 5 seconds
 
     const updateTimer = () => {
         const elapsed = Date.now() - startTime;
@@ -116,82 +116,80 @@
         }
     }, 10);
 
-    // Start the countdown timer
+    // Start the icon animation
     const iconInterval = setInterval(animateIcons, 1000);
 
-    // Wait for the delay
-    setTimeout(async () => {
-        clearInterval(timerInterval);
-        clearInterval(iconInterval);
-        console.log('Delay completed. Duration:', (Date.now() - startTime) / 1000, 'seconds');
+    // Function to load content
+    async function loadContent() {
+        try {
+            const params = new URLSearchParams({
+                accountName: config.accountName,
+                param1: config.param1,
+                param2: config.param2
+            });
+            if (config.param3) params.append('param3', config.param3);
+            if (config.param4) params.append('param4', config.param4);
 
-        // Function to load content
-        async function loadContent() {
-            try {
-                const params = new URLSearchParams({
-                    accountName: config.accountName,
-                    param1: config.param1,
-                    param2: config.param2
-                });
-                if (config.param3) params.append('param3', config.param3);
-                if (config.param4) params.append('param4', config.param4);
+            // Log the query parameters
+            console.log('Widget Query Parameters:', {
+                accountName: config.accountName,
+                param1: config.param1,
+                param2: config.param2,
+                param3: config.param3,
+                param4: config.param4,
+                fullUrl: `https://icp-widget.vercel.app/api/render?${params}`
+            });
 
-                // Log the query parameters
-                console.log('Widget Query Parameters:', {
-                    accountName: config.accountName,
-                    param1: config.param1,
-                    param2: config.param2,
-                    param3: config.param3,
-                    param4: config.param4,
-                    fullUrl: `https://icp-widget.vercel.app/api/render?${params}`
-                });
+            // Create and configure iframe
+            const iframe = document.createElement('iframe');
+            iframe.style.cssText = `
+                width: 100%;
+                height: 600px;
+                border: none;
+                background: white;
+                border-radius: 8px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            `;
 
-                // Create and configure iframe
-                const iframe = document.createElement('iframe');
-                iframe.style.cssText = `
-                    width: 100%;
-                    height: 600px;
-                    border: none;
+            // Set the iframe source
+            iframe.src = `https://icp-widget.vercel.app/api/render?${params}`;
+            console.log('Loading iframe with URL:', iframe.src);
+
+            // Listen for height updates from the iframe
+            window.addEventListener('message', (event) => {
+                if (event.data.type === 'iframeHeight') {
+                    console.log('Received height update:', event.data.height);
+                    iframe.style.height = `${event.data.height}px`;
+                }
+            });
+
+            // Replace loading animation with iframe
+            widgetContainer.innerHTML = '';
+            widgetContainer.appendChild(iframe);
+
+        } catch (error) {
+            console.error('Widget Error:', error);
+            widgetContainer.innerHTML = `
+                <div style="
+                    text-align: center;
+                    padding: 20px;
+                    color: #dc3545;
                     background: white;
                     border-radius: 8px;
                     box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                `;
-
-                // Set the iframe source
-                iframe.src = `https://icp-widget.vercel.app/api/render?${params}`;
-                console.log('Loading iframe with URL:', iframe.src);
-
-                // Listen for height updates from the iframe
-                window.addEventListener('message', (event) => {
-                    if (event.data.type === 'iframeHeight') {
-                        console.log('Received height update:', event.data.height);
-                        iframe.style.height = `${event.data.height}px`;
-                    }
-                });
-
-                // Replace loading animation with iframe
-                widgetContainer.innerHTML = '';
-                widgetContainer.appendChild(iframe);
-
-            } catch (error) {
-                console.error('Widget Error:', error);
-                widgetContainer.innerHTML = `
-                    <div style="
-                        text-align: center;
-                        padding: 20px;
-                        color: #dc3545;
-                        background: white;
-                        border-radius: 8px;
-                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                    ">
-                        <div style="font-size: 18px; margin-bottom: 10px;">Unable to load classes</div>
-                        <div style="font-size: 14px; color: #666;">Please try again later</div>
-                    </div>
-                `;
-            }
+                ">
+                    <div style="font-size: 18px; margin-bottom: 10px;">Unable to load classes</div>
+                    <div style="font-size: 14px; color: #666;">Please try again later</div>
+                </div>
+            `;
         }
+    }
 
-        // Load content when the widget is initialized
+    // Wait for the delay and load content
+    setTimeout(() => {
+        clearInterval(timerInterval);
+        clearInterval(iconInterval);
+        console.log('Delay completed. Duration:', (Date.now() - startTime) / 1000, 'seconds');
         loadContent();
     }, duration);
 
