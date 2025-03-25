@@ -1,5 +1,5 @@
 import puppeteer from 'puppeteer-core';
-import chrome from 'chrome-aws-lambda';
+import chromium from '@sparticuz/chromium';
 
 export default async function handler(req, res) {
     console.log('Render endpoint received request:', {
@@ -46,10 +46,10 @@ export default async function handler(req, res) {
         // Launch Puppeteer
         console.log('Launching Puppeteer...');
         browser = await puppeteer.launch({
-            args: chrome.args,
-            defaultViewport: chrome.defaultViewport,
-            executablePath: await chrome.executablePath,
-            headless: chrome.headless,
+            args: chromium.args,
+            defaultViewport: chromium.defaultViewport,
+            executablePath: await chromium.executablePath,
+            headless: true,
             ignoreHTTPSErrors: true
         });
         console.log('Puppeteer launched successfully');
