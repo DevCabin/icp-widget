@@ -15,6 +15,10 @@
     {
       "src": "/render",
       "dest": "/api/render.js"
+    },
+    {
+      "src": "/diagnose",
+      "dest": "/api/diagnose.js"
     }
   ]
 }
