@@ -1,26 +1,10 @@
 {
   "version": 2,
   "public": true,
+  "cleanUrls": true,
   "headers": [
     {
-      "source": "/icp-widget.js",
-      "headers": [
-        {
-          "key": "Access-Control-Allow-Origin",
-          "value": "*"
-        },
-        {
-          "key": "Content-Type",
-          "value": "application/javascript"
-        },
-        {
-          "key": "Cache-Control",
-          "value": "no-cache"
-        }
-      ]
-    },
-    {
-      "source": "/api/(.*)",
+      "source": "/(.*)",
       "headers": [
         {
           "key": "Access-Control-Allow-Origin",
@@ -37,28 +21,14 @@
       ]
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/icp-widget.js",
-      "dest": "/static/icp-widget.js",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Content-Type": "application/javascript; charset=utf-8",
-        "Cache-Control": "no-cache"
-      }
+      "source": "/icp-widget.js",
+      "destination": "/static/icp-widget.js"
     },
     {
-      "src": "/api/(.*)",
-      "dest": "/api/$1",
-      "headers": {
-        "Access-Control-Allow-Origin": "*",
-        "Access-Control-Allow-Methods": "GET, OPTIONS",
-        "Access-Control-Allow-Headers": "Content-Type"
-      }
+      "source": "/api/:path*",
+      "destination": "/api/:path*"
     }
-  ],
-  "builds": [
-    { "src": "static/**/*", "use": "@vercel/static" },
-    { "src": "api/**/*.js", "use": "@vercel/node" }
   ]
 }
