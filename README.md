@@ -2,53 +2,76 @@
 
 A lightweight widget for embedding IClassPro class schedules on any website.
 
-## Features
+## Current Version: 1.5.1
 
-- Responsive design that works on all screen sizes
-- Real-time class schedule display
-- Customizable appearance
-- No dependencies on external libraries
-- Server-side rendering for better performance
+### Features
+- Dynamic class schedule loading
+- Customizable parameters
+- Responsive design
+- Loading animation
+- Error handling
+- Automatic height adjustment
+- CORS support
 
-## Installation
+### Next Steps
+- [ ] Fix styling issues with card bodies
+- [ ] Add support for custom themes
+- [ ] Implement caching for better performance
+- [ ] Add support for filtering options
+- [ ] Improve error messages and user feedback
 
-1. Add the widget script to your HTML:
+### Installation
+
+Add the widget script to your HTML:
+
 ```html
-<script src="https://icp-widget.vercel.app/icp-widget.js"></script>
-```
-
-2. Add the widget container where you want it to appear:
-```html
-<div id="icp-widget"></div>
-```
-
-3. Initialize the widget with your IClassPro account details:
-```html
-<script>
-  window.ICPWidget.init({
-    accountName: 'your-account-name',
-    param1: 'genders=2',
-    param2: 'programs=56'
-  });
+<script 
+    src="https://icp-widget.vercel.app/icp-widget.js"
+    data-account-name="your-account-name"
+    data-levels="4"
+    data-programs="56"
+    data-days="2"
+    async
+    crossorigin="anonymous">
 </script>
 ```
 
-## Deployment
+### Required Parameters
+- `data-account-name`: Your IClassPro account name
 
-The widget is deployed on Vercel. To deploy your own instance:
+### Optional Parameters
+- `data-levels`: Level filter (default: "4")
+- `data-programs`: Program filter (default: "56")
+- `data-days`: Days filter (default: "2")
+- `data-container-id`: Custom ID for the widget container (default: "icp-widget")
 
-1. Fork this repository
-2. Connect your fork to Vercel
-3. Deploy using the Vercel dashboard
+### Development
 
-## Configuration
+1. Clone the repository
+2. Install dependencies: `npm install`
+3. Start the development server: `vercel dev`
+4. Open `http://localhost:3000` in your browser
 
-The widget accepts the following configuration options:
+### Local Testing
 
-- `accountName`: Your IClassPro account name (required)
-- `param1`: First URL parameter (optional)
-- `param2`: Second URL parameter (optional)
+For local development, use the local path:
+```html
+<script src="/icp-widget.js" ...></script>
+```
 
-## License
+For production, use the Vercel URL:
+```html
+<script src="https://icp-widget.vercel.app/icp-widget.js" ...></script>
+```
+
+### Contributing
+
+1. Fork the repository
+2. Create a feature branch
+3. Commit your changes
+4. Push to the branch
+5. Create a Pull Request
+
+### License
 
 ISC

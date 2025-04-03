@@ -9,6 +9,10 @@
   },
   "routes": [
     {
+      "src": "/",
+      "dest": "/index.html"
+    },
+    {
       "src": "/test",
       "dest": "/api/test.js"
     },
@@ -19,6 +23,10 @@
     {
       "src": "/diagnose",
       "dest": "/api/diagnose.js"
+    },
+    {
+      "src": "/icp-widget.js",
+      "dest": "/public/icp-widget.js"
     }
   ]
 }

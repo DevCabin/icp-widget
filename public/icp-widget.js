@@ -5,8 +5,7 @@
         accountName: script.getAttribute("data-account-name"),
         param1: script.getAttribute("data-param1"),
         param2: script.getAttribute("data-param2"),
-        param3: script.getAttribute("data-param3"),
-        param4: script.getAttribute("data-param4")
+        param3: script.getAttribute("data-param3")
     };
 
     // Log the widget configuration
@@ -15,8 +14,7 @@
         accountName: config.accountName,
         param1: config.param1,
         param2: config.param2,
-        param3: config.param3,
-        param4: config.param4
+        param3: config.param3
     });
 
     // Create the widget container
@@ -82,15 +80,7 @@
     // Start the loading animation
     let currentIconIndex = 0;
     let startTime = Date.now();
-    const duration = 5000; // 5 seconds
-
-    const updateTimer = () => {
-        const elapsed = Date.now() - startTime;
-        const remaining = Math.max(0, duration - elapsed);
-        const seconds = Math.floor(remaining / 1000);
-        const milliseconds = Math.floor((remaining % 1000));
-        timerElement.textContent = `${seconds}.${milliseconds.toString().padStart(3, '0')}`;
-    };
+    const duration = 3000; // 3 seconds
 
     const animateIcons = () => {
         icons.forEach((icon, index) => {
@@ -99,36 +89,42 @@
         currentIconIndex = (currentIconIndex + 1) % icons.length;
     };
 
-    // Initial icon animation
-    animateIcons();
-
-    // Start the countdown timer
-    let timeLeft = 5000; // 5 seconds
-    const timerInterval = setInterval(() => {
-        timeLeft -= 10;
-        const seconds = Math.floor(timeLeft / 1000);
-        const milliseconds = timeLeft % 1000;
+    // Single interval for both countdown and animation
+    const interval = setInterval(() => {
+        // Update timer
+        const elapsed = Date.now() - startTime;
+        const remaining = Math.max(0, duration - elapsed);
+        const seconds = Math.floor(remaining / 1000);
+        const milliseconds = remaining % 1000;
         timerElement.textContent = `${seconds}.${milliseconds.toString().padStart(3, '0')}`;
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
+
+        // Animate icon every second
+        if (elapsed % 1000 < 50) { // Check if we're at the start of a second
+            animateIcons();
+        }
+
+        // Check if we're done
+        if (remaining <= 0) {
+            clearInterval(interval);
             timerElement.textContent = '0.000';
             loadContent();
         }
     }, 10);
 
-    // Start the icon animation
-    const iconInterval = setInterval(animateIcons, 1000);
+    // Initial icon state
+    animateIcons();
 
     // Function to load content
     async function loadContent() {
         try {
             const params = new URLSearchParams({
-                accountName: config.accountName,
-                param1: config.param1,
-                param2: config.param2
+                accountName: config.accountName
             });
+
+            // Add parameters if they exist
+            if (config.param1) params.append('param1', config.param1);
+            if (config.param2) params.append('param2', config.param2);
             if (config.param3) params.append('param3', config.param3);
-            if (config.param4) params.append('param4', config.param4);
 
             // Log the query parameters
             console.log('Widget Query Parameters:', {
@@ -136,8 +132,7 @@
                 param1: config.param1,
                 param2: config.param2,
                 param3: config.param3,
-                param4: config.param4,
-                fullUrl: `https://icp-widget.vercel.app/api/render?${params}`
+                fullUrl: `/api/render?${params}`
             });
 
             // Create and configure iframe
@@ -152,7 +147,10 @@
             `;
 
             // Set the iframe source
-            iframe.src = `https://icp-widget.vercel.app/api/render?${params}`;
+            const baseUrl = window.location.hostname === 'localhost' 
+                ? '' 
+                : 'https://icp-widget.vercel.app';
+            iframe.src = `${baseUrl}/api/render?${params}`;
             console.log('Loading iframe with URL:', iframe.src);
 
             // Listen for height updates from the iframe
@@ -184,14 +182,6 @@
             `;
         }
     }
-
-    // Wait for the delay and load content
-    setTimeout(() => {
-        clearInterval(timerInterval);
-        clearInterval(iconInterval);
-        console.log('Delay completed. Duration:', (Date.now() - startTime) / 1000, 'seconds');
-        loadContent();
-    }, duration);
 
     // Add the container to the page
     script.parentNode.insertBefore(widgetContainer, script);
