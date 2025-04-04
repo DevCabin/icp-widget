@@ -96,8 +96,8 @@ module.exports = async function handler(req, res) {
             // Extract card bodies
             console.log('Extracting card bodies');
             const cardBodies = await page.evaluate(() => {
-                const cards = document.querySelectorAll('.card-body');
-                return Array.from(cards).map(card => card.innerHTML);
+                const cards = document.querySelectorAll('article.card');
+                return Array.from(cards).map(card => card.outerHTML);
             });
 
             console.log(`Found ${cardBodies.length} card bodies`);
@@ -116,12 +116,127 @@ module.exports = async function handler(req, res) {
                             padding: 20px;
                             background: #f5f5f5;
                         }
-                        .card-body {
+                        .card {
+                            position: relative;
+                            margin-bottom: 20px;
+                        }
+                        .card-image {
                             background: white;
                             border-radius: 8px;
+                            overflow: hidden;
+                        }
+                        .card-image-gap-top {
+                            margin-top: 20px;
+                        }
+                        .card-overline {
+                            border-top: 1px solid #eee;
+                            padding-top: 20px;
+                        }
+                        .card-body {
                             padding: 20px;
-                            margin-bottom: 20px;
-                            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        }
+                        .row {
+                            display: flex;
+                            flex-wrap: wrap;
+                            margin: 0 -15px;
+                        }
+                        .row-equal-height {
+                            display: flex;
+                            flex-wrap: wrap;
+                        }
+                        .align-content-start {
+                            align-content: flex-start;
+                        }
+                        .col-12 {
+                            width: 100%;
+                            padding: 0 15px;
+                        }
+                        .card-image-wrap {
+                            position: relative;
+                            margin-bottom: 15px;
+                        }
+                        [data-aspect-ratio="2:1"] {
+                            padding-bottom: 50%;
+                        }
+                        .img-center-crop {
+                            position: absolute;
+                            top: 0;
+                            left: 0;
+                            width: 100%;
+                            height: 100%;
+                            object-fit: cover;
+                        }
+                        .title {
+                            font-size: 1.25rem;
+                            font-weight: 600;
+                            margin: 0 0 10px;
+                        }
+                        .list-unstyled {
+                            list-style: none;
+                            padding: 0;
+                            margin: 0;
+                        }
+                        .list-time {
+                            margin-bottom: 10px;
+                        }
+                        .list-date {
+                            display: flex;
+                            align-items: center;
+                            gap: 5px;
+                        }
+                        .text-separator {
+                            color: #999;
+                        }
+                        .text-link {
+                            color: #007bff;
+                            text-decoration: none;
+                        }
+                        .list-week {
+                            display: flex;
+                            justify-content: space-between;
+                            list-style: none;
+                            padding: 0;
+                            margin: 10px 0;
+                        }
+                        .list-week li {
+                            opacity: 0.5;
+                        }
+                        .list-week li.active {
+                            opacity: 1;
+                            font-weight: 600;
+                        }
+                        .round-progress-container {
+                            position: relative;
+                            width: 100px;
+                            height: 100px;
+                        }
+                        .round-progress {
+                            position: relative;
+                            width: 100%;
+                            height: 100%;
+                        }
+                        .vacancy-text {
+                            position: absolute;
+                            top: 50%;
+                            left: 50%;
+                            transform: translate(-50%, -50%);
+                            font-weight: 600;
+                        }
+                        .padding-top-small {
+                            padding-top: 10px;
+                        }
+                        .margin-top-large {
+                            margin-top: 20px;
+                        }
+                        .margin-bottom-small {
+                            margin-bottom: 10px;
+                        }
+                        .card-absolute-bottom {
+                            position: absolute;
+                            bottom: 0;
+                            left: 0;
+                            right: 0;
+                            padding: 15px;
                         }
                     </style>
                 </head>

@@ -1,0 +1,1365 @@
+<style>
+
+/*
+
+TESTING ONLY
+
+*/
+.main-container {
+    width: 1200px;
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+/*
+
+END TESTING ONLY
+
+*/
+
+ .row { display: flex; flex-wrap: wrap; margin: 0 -15px; }
+            .col-12 { width: 100%; padding: 0 15px; }
+            .card-body {
+                background: white;
+                border-radius: 8px;
+                padding: 20px;
+                margin-bottom: 20px;
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .card-image-wrap { margin-bottom: 15px; }
+            .img-center-crop { width: 100%; height: auto; }
+            .title { font-size: 1.25rem; font-weight: 600; margin: 0 0 10px; }
+            .list-unstyled { list-style: none; padding: 0; margin: 0 0 10px; }
+            .list-date { display: flex; align-items: center; gap: 5px; }
+            .text-separator { color: #999; }
+            .text-link { color: #007bff; text-decoration: none; }
+            .round-progress-container { position: relative; }
+            .vacancy-text { 
+                position: absolute; 
+                top: 50%; 
+                left: 50%; 
+                transform: translate(-50%, -50%);
+                font-weight: 600;
+            }
+            .list-week {
+                display: flex;
+                justify-content: space-between;
+                list-style: none;
+                padding: 0;
+                margin: 10px 0;
+            }
+            .list-week li { opacity: 0.5; }
+            .list-week li.active { opacity: 1; font-weight: 600; }
+            /* NEW */
+            .row.row-equal-height .card {
+                height: 100%;
+            }
+
+            .card {
+                position: relative;
+                border-radius: .625rem;
+                background-color: #fff;
+                transition: transform .2s cubic-bezier(.67,-1.07,.31,2.08)
+            }
+
+            @media (prefers-reduced-motion: reduce) {
+                .card {
+                    transition: none
+                }
+            }
+
+            .card:before {
+                content: "";
+                position: absolute;
+                inset: 0;
+                border-radius: .625rem;
+                box-shadow: 0 .125rem .25rem #00000013;
+                pointer-events: none
+            }
+
+            .card.overflow-y,.card.overflow-x-hidden {
+                box-shadow: 0 .125rem .25rem #00000013
+            }
+
+            .card.overflow-y:before,.card.overflow-x-hidden:before {
+                display: none
+            }
+
+            .card[class*=card-image] {
+                border-width: 0
+            }
+
+            .card[class*=card-image].card-image-gap-top>.card-body {
+                padding-top: .9375rem
+            }
+
+            .card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-xxs]:not(.col-xxs-12),.card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-xxs]:not(.col-xxs-12)~[class*=col-] {
+                margin-top: -.9375rem
+            }
+
+            @media (min-width: 480px) {
+                .card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-xs]:not(.col-xs-12),.card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-xs]:not(.col-xs-12)~[class*=col-] {
+                    margin-top:-.9375rem
+                }
+
+                .card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-xs].col-xs-12,.card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-xs].col-xs-12~[class*=col-] {
+                    margin-top: 0
+                }
+            }
+
+            @media (min-width: 768px) {
+                .card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-sm]:not(.col-sm-12),.card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-sm]:not(.col-sm-12)~[class*=col-] {
+                    margin-top:-.9375rem
+                }
+
+                .card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-sm].col-sm-12,.card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-sm].col-sm-12~[class*=col-] {
+                    margin-top: 0
+                }
+            }
+
+            @media (min-width: 992px) {
+                .card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-md]:not(.col-md-12),.card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-md]:not(.col-md-12)~[class*=col-] {
+                    margin-top:-.9375rem
+                }
+            }
+
+            @media (min-width: 1200px) {
+                .card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-lg]:not(.col-lg-12),.card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-lg]:not(.col-lg-12)~[class*=col-] {
+                    margin-top:-.9375rem
+                }
+            }
+
+            @media (min-width: 1600px) {
+                .card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-xl]:not(.col-xl-12),.card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-]:first-child[class*=col-xl]:not(.col-xl-12)~[class*=col-] {
+                    margin-top:-.9375rem
+                }
+            }
+
+            @media (max-width: 767.98px) {
+                .card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-].display-none-xs-down:first-child+[class*=col] {
+                    margin-top:-.9375rem
+                }
+            }
+
+            @media (max-width: 991.98px) {
+                .card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-].display-none-sm-down:first-child+[class*=col] {
+                    margin-top:-.9375rem
+                }
+            }
+
+            @media (min-width: 768px) {
+                .card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-].display-none-sm-up:first-child+[class*=col] {
+                    margin-top:-.9375rem
+                }
+            }
+
+            @media (min-width: 992px) {
+                .card[class*=card-image].card-image-gap-top>.card-body>.row>[class*=col-].display-none-md-up:first-child+[class*=col] {
+                    margin-top:-.9375rem
+                }
+            }
+
+            .card[class*=card-image].card-image-gap-bottom>.card-body {
+                padding-bottom: .9375rem
+            }
+
+            .card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-xxs]:not(.col-xxs-12),.card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-xxs]:not(.col-xxs-12)~[class*=col-] {
+                margin-bottom: -.9375rem
+            }
+
+            @media (min-width: 480px) {
+                .card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-xs]:not(.col-xs-12),.card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-xs]:not(.col-xs-12)~[class*=col-] {
+                    margin-bottom:-.9375rem
+                }
+
+                .card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-xs].col-xs-12,.card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-xs].col-xs-12~[class*=col-] {
+                    margin-bottom: 0
+                }
+            }
+
+            @media (min-width: 768px) {
+                .card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-sm]:not(.col-sm-12),.card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-sm]:not(.col-sm-12)~[class*=col-] {
+                    margin-bottom:-.9375rem
+                }
+
+                .card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-sm].col-sm-12,.card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-sm].col-sm-12~[class*=col-] {
+                    margin-bottom: 0
+                }
+            }
+
+            @media (min-width: 992px) {
+                .card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-md]:not(.col-md-12),.card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-md]:not(.col-md-12)~[class*=col-] {
+                    margin-bottom:-.9375rem
+                }
+            }
+
+            @media (min-width: 1200px) {
+                .card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-lg]:not(.col-lg-12),.card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-lg]:not(.col-lg-12)~[class*=col-] {
+                    margin-bottom:-.9375rem
+                }
+            }
+
+            @media (min-width: 1600px) {
+                .card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-xl]:not(.col-xl-12),.card[class*=card-image].card-image-gap-bottom>.card-body>.row>[class*=col-]:first-child[class*=col-xl]:not(.col-xl-12)~[class*=col-] {
+                    margin-bottom:-.9375rem
+                }
+            }
+
+            .card[class*=card-image] img {
+                transition: transform 1s cubic-bezier(.25,.46,.45,.94)
+            }
+
+            .card[class*=card-image] .card-body {
+                padding: 0;
+                border-radius: inherit;
+                overflow: hidden
+            }
+
+            .card[class*=card-image] .card-body>.row {
+                margin: 0
+            }
+
+            .card[class*=card-image] .card-body>.row:only-of-type {
+                height: 100%
+            }
+
+            .card[class*=card-image] .card-body>.row>.col,.card[class*=card-image] .card-body>.row>[class*=col-] {
+                position: relative;
+                padding: 1.875rem
+            }
+
+            .card[class*=card-image] .card-body>.row>.col:not(.col-12) .card-image-wrap:not([data-aspect-ratio]),.card[class*=card-image] .card-body>.row>[class*=col-]:not(.col-12) .card-image-wrap:not([data-aspect-ratio]) {
+                position: absolute;
+                inset: 0;
+                margin: 0
+            }
+
+            .card[class*=card-image] .card-body>.row>.col:not(.col-12) .card-image-wrap:not([data-aspect-ratio])>img,.card[class*=card-image] .card-body>.row>[class*=col-]:not(.col-12) .card-image-wrap:not([data-aspect-ratio])>img {
+                width: 100%;
+                height: 100%;
+                -o-object-fit: cover;
+                object-fit: cover
+            }
+
+            .card[class*=card-image] .card-body>.row>.col.col-12 .card-image-wrap,.card[class*=card-image] .card-body>.row>[class*=col-].col-12 .card-image-wrap {
+                margin: -1.875rem
+            }
+
+            .card[class*=card-image] .card-body>.row>.col.col-12 .card-image-wrap:not([data-aspect-ratio])>img,.card[class*=card-image] .card-body>.row>[class*=col-].col-12 .card-image-wrap:not([data-aspect-ratio])>img {
+                width: 100%;
+                height: 12.5rem
+            }
+
+            .card[class*=card-image] .card-body>.row>.col[class*=col-xxs]:not(.col-xxs-12) .card-image-wrap:not([data-aspect-ratio]),.card[class*=card-image] .card-body>.row>[class*=col-][class*=col-xxs]:not(.col-xxs-12) .card-image-wrap:not([data-aspect-ratio]) {
+                position: absolute;
+                inset: 0;
+                margin: 0
+            }
+
+            .card[class*=card-image] .card-body>.row>.col[class*=col-xxs]:not(.col-xxs-12) .card-image-wrap:not([data-aspect-ratio])>img,.card[class*=card-image] .card-body>.row>[class*=col-][class*=col-xxs]:not(.col-xxs-12) .card-image-wrap:not([data-aspect-ratio])>img {
+                width: 100%;
+                height: 100%;
+                -o-object-fit: cover;
+                object-fit: cover
+            }
+            @media (min-width: 992px) {
+                .card[class*=card-image] .card-body>.row>.col, .card[class*=card-image] .card-body>.row>[class*=col-] {
+                    padding: 1.875rem;
+                }
+            }
+            @media (min-width: 768px) {
+                .card[class*=card-image] .card-body>.row>.col, .card[class*=card-image] .card-body>.row>[class*=col-] {
+                    padding: 1.875rem;
+                }
+            }
+            @media (min-width: 480px) {
+                .card[class*=card-image] .card-body>.row>.col, .card[class*=card-image] .card-body>.row>[class*=col-] {
+                    padding: 1.875rem;
+                }
+            }
+            .card[class*=card-image] .card-body>.row>.col, .card[class*=card-image] .card-body>.row>[class*=col-] {
+                position: relative;
+                padding: 1.875rem;
+            }
+
+</style>
+<div class="main-container">
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">BeginGym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Sunday">Sun</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">9:00 AM</time> – <time _ngcontent-ptb-c62="">9:45 AM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container full">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="4" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 124.99978794249589 3.5000000001850538 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(229, 16, 72); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <!----><!---->
+            <span _ngcontent-ptb-c62="">
+               <span _ngcontent-ptb-c62="">
+                  <span _ngcontent-ptb-c62="">WAITLIST</span><!----><!---->
+               </span>
+               <!---->
+            </span>
+            <!---->
+         </span>
+      </div>
+   </div>
+</div>
+
+
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">BeginGym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Sunday">Sun</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">10:30 AM</time> – <time _ngcontent-ptb-c62="">11:15 AM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container open">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 3.5000000001040945 125.00015904312804 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(81, 185, 23); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <span _ngcontent-ptb-c62="">
+               <!----> Open 
+            </span>
+            <!----><!----><!---->
+         </span>
+      </div>
+   </div>
+</div>
+
+
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">BeginGym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Sunday">Sun</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">11:15 AM</time> – <time _ngcontent-ptb-c62="">12:00 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container open">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 3.5000000001040945 125.00015904312804 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(81, 185, 23); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <span _ngcontent-ptb-c62="">
+               <!----> Open 
+            </span>
+            <!----><!----><!---->
+         </span>
+      </div>
+   </div>
+</div>
+
+
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">Begingym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Tuesday">Tue</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">3:45 PM</time> – <time _ngcontent-ptb-c62="">4:30 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container open">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 3.5000000001040945 125.00015904312804 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(81, 185, 23); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <span _ngcontent-ptb-c62="">
+               <!----> Open 
+            </span>
+            <!----><!----><!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">BeginGym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Tuesday">Tue</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">4:30 PM</time> – <time _ngcontent-ptb-c62="">5:15 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container full">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="4" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 124.99978794249589 3.5000000001850538 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(229, 16, 72); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <!----><!---->
+            <span _ngcontent-ptb-c62="">
+               <span _ngcontent-ptb-c62="">
+                  <span _ngcontent-ptb-c62="">WAITLIST</span><!----><!---->
+               </span>
+               <!---->
+            </span>
+            <!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">BeginGym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Wednesday">Wed</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">4:30 PM</time> – <time _ngcontent-ptb-c62="">5:15 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container full">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="4" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 124.99978794249589 3.5000000001850538 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(229, 16, 72); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <!----><!---->
+            <span _ngcontent-ptb-c62="">
+               <span _ngcontent-ptb-c62="">
+                  <span _ngcontent-ptb-c62="">WAITLIST</span><!----><!---->
+               </span>
+               <!---->
+            </span>
+            <!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">BeginGym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Wednesday">Wed</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">5:15 PM</time> – <time _ngcontent-ptb-c62="">6:00 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container open">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 3.5000000001040945 125.00015904312804 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(81, 185, 23); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <span _ngcontent-ptb-c62="">
+               <!----> Open 
+            </span>
+            <!----><!----><!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">BeginGym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Wednesday">Wed</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">6:00 PM</time> – <time _ngcontent-ptb-c62="">6:45 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container full">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="4" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 124.99978794249589 3.5000000001850538 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(229, 16, 72); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <!----><!---->
+            <span _ngcontent-ptb-c62="">
+               <span _ngcontent-ptb-c62="">
+                  <span _ngcontent-ptb-c62="">WAITLIST</span><!----><!---->
+               </span>
+               <!---->
+            </span>
+            <!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">Begingym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Thursday">Thu</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">3:00 PM</time> – <time _ngcontent-ptb-c62="">3:45 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container open">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 3.5000000001040945 125.00015904312804 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(81, 185, 23); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <span _ngcontent-ptb-c62="">
+               <!----> Open 
+            </span>
+            <!----><!----><!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">BeginGym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Thursday">Thu</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">3:45 PM</time> – <time _ngcontent-ptb-c62="">4:30 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container open">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 3.5000000001040945 125.00015904312804 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(81, 185, 23); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <span _ngcontent-ptb-c62="">
+               <!----> Open 
+            </span>
+            <!----><!----><!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">BeginGym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Thursday">Thu</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">4:30 PM</time> – <time _ngcontent-ptb-c62="">5:15 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container full">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="4" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 124.99978794249589 3.5000000001850538 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(229, 16, 72); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <!----><!---->
+            <span _ngcontent-ptb-c62="">
+               <span _ngcontent-ptb-c62="">
+                  <span _ngcontent-ptb-c62="">WAITLIST</span><!----><!---->
+               </span>
+               <!---->
+            </span>
+            <!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">BeginGym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Friday">Fri</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">4:15 PM</time> – <time _ngcontent-ptb-c62="">5:00 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container open">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 3.5000000001040945 125.00015904312804 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(81, 185, 23); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <span _ngcontent-ptb-c62="">
+               <!----> Open 
+            </span>
+            <!----><!----><!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">Begingym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Friday">Fri</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">5:00 PM</time> – <time _ngcontent-ptb-c62="">5:45 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container open">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 3.5000000001040945 125.00015904312804 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(81, 185, 23); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <span _ngcontent-ptb-c62="">
+               <!----> Open 
+            </span>
+            <!----><!----><!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">BeginGym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Friday">Fri</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">5:45 PM</time> – <time _ngcontent-ptb-c62="">6:30 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container full">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="4" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 124.99978794249589 3.5000000001850538 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(229, 16, 72); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <!----><!---->
+            <span _ngcontent-ptb-c62="">
+               <span _ngcontent-ptb-c62="">
+                  <span _ngcontent-ptb-c62="">WAITLIST</span><!----><!---->
+               </span>
+               <!---->
+            </span>
+            <!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">BeginGym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Friday">Fri</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">6:30 PM</time> – <time _ngcontent-ptb-c62="">7:15 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container open">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 3.5000000001040945 125.00015904312804 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(81, 185, 23); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <span _ngcontent-ptb-c62="">
+               <!----> Open 
+            </span>
+            <!----><!----><!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">BeginGym  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Saturday">Sat</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">10:30 AM</time> – <time _ngcontent-ptb-c62="">11:15 AM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container full">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="4" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 124.99978794249589 3.5000000001850538 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(229, 16, 72); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <!----><!---->
+            <span _ngcontent-ptb-c62="">
+               <span _ngcontent-ptb-c62="">
+                  <span _ngcontent-ptb-c62="">WAITLIST</span><!----><!---->
+               </span>
+               <!---->
+            </span>
+            <!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">Giraffes  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Sunday">Sun</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">11:45 AM</time> – <time _ngcontent-ptb-c62="">12:30 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container full">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="4" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 124.99978794249589 3.5000000001850538 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(229, 16, 72); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <!----><!---->
+            <span _ngcontent-ptb-c62="">
+               <span _ngcontent-ptb-c62="">
+                  <span _ngcontent-ptb-c62="">WAITLIST</span><!----><!---->
+               </span>
+               <!---->
+            </span>
+            <!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">Giraffes  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Monday">Mon</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">5:00 PM</time> – <time _ngcontent-ptb-c62="">5:45 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container open">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 3.5000000001040945 125.00015904312804 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(81, 185, 23); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <span _ngcontent-ptb-c62="">
+               <!----> Open 
+            </span>
+            <!----><!----><!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">Giraffes  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Tuesday">Tue</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">3:45 PM</time> – <time _ngcontent-ptb-c62="">4:30 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container full">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="4" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 124.99978794249589 3.5000000001850538 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(229, 16, 72); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <!----><!---->
+            <span _ngcontent-ptb-c62="">
+               <span _ngcontent-ptb-c62="">
+                  <span _ngcontent-ptb-c62="">WAITLIST</span><!----><!---->
+               </span>
+               <!---->
+            </span>
+            <!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">Giraffes  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Tuesday">Tue</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">6:00 PM</time> – <time _ngcontent-ptb-c62="">6:45 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container full">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="4" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 124.99978794249589 3.5000000001850538 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(229, 16, 72); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <!----><!---->
+            <span _ngcontent-ptb-c62="">
+               <span _ngcontent-ptb-c62="">
+                  <span _ngcontent-ptb-c62="">WAITLIST</span><!----><!---->
+               </span>
+               <!---->
+            </span>
+            <!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">Giraffes  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Wednesday">Wed</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">4:00 PM</time> – <time _ngcontent-ptb-c62="">4:45 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container open">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 3.5000000001040945 125.00015904312804 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(81, 185, 23); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <span _ngcontent-ptb-c62="">
+               <!----> Open 
+            </span>
+            <!----><!----><!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">Giraffes  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Wednesday">Wed</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">4:45 PM</time> – <time _ngcontent-ptb-c62="">5:30 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container open">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 3.5000000001040945 125.00015904312804 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(81, 185, 23); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <span _ngcontent-ptb-c62="">
+               <!----> Open 
+            </span>
+            <!----><!----><!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">Giraffes  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Wednesday">Wed</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">6:00 PM</time> – <time _ngcontent-ptb-c62="">6:45 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container open">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 3.5000000001040945 125.00015904312804 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(81, 185, 23); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <span _ngcontent-ptb-c62="">
+               <!----> Open 
+            </span>
+            <!----><!----><!---->
+         </span>
+      </div>
+   </div>
+</div>
+<div _ngcontent-ptb-c62="" class="row row-equal-height align-content-start">
+   <div _ngcontent-ptb-c62="" class="col-12">
+      <div _ngcontent-ptb-c62="" data-aspect-ratio="2:1" class="card-image-wrap"><img _ngcontent-ptb-c62="" alt="" class="img-center-crop" src="https://images.iclasspro.com/images/40217/programs/1593755094.237d7d06cebb264db6719299cee1b016cd795abd.jpeg"></div>
+      <!----><!----><!---->
+   </div>
+   <!---->
+   <div _ngcontent-ptb-c62="" class="col-12 position-static">
+      <h2 _ngcontent-ptb-c62="" class="title">Giraffes  </h2>
+      <!----><!----><!----><!---->
+      <ul _ngcontent-ptb-c62="" class="list-unstyled list-time margin-bottom-small">
+         <li _ngcontent-ptb-c62=""><span _ngcontent-ptb-c62="" class="list-date"><span _ngcontent-ptb-c62="" class="list-date-day" aria-label="Thursday">Thu</span><span _ngcontent-ptb-c62="" aria-hidden="true" class="text-separator">|</span><span _ngcontent-ptb-c62="" class="list-date-hours"><time _ngcontent-ptb-c62="">6:00 PM</time> – <time _ngcontent-ptb-c62="">6:45 PM</time></span></span></li>
+         <!---->
+      </ul>
+      <!----><a _ngcontent-ptb-c62="" href="#" data-toggle="modal" data-target=".modal-view-dates" class="text-link"> View Available Dates </a><!---->
+      <div _ngcontent-ptb-c62="" class="padding-top-small margin-top-large">
+         <div _ngcontent-ptb-c62="" class="days-price-wrap card-absolute-bottom">
+            <ul _ngcontent-ptb-c62="" class="list-week">
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Sunday">S</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Monday">M</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Tuesday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Wednesday">W</abbr></li>
+               <li _ngcontent-ptb-c62="" class="active"><abbr _ngcontent-ptb-c62="" title="Thursday">T</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Friday">F</abbr></li>
+               <li _ngcontent-ptb-c62=""><abbr _ngcontent-ptb-c62="" title="Saturday">S</abbr></li>
+            </ul>
+         </div>
+      </div>
+      <div _ngcontent-ptb-c62="" class="round-progress-container open">
+         <round-progress _ngcontent-ptb-c62="" role="progressbar" max="4" rounded="true" responsive="true" duration="800" animation="easeInOutQuart" stroke="7" class="round-progress responsive" _nghost-ptb-c50="" aria-valuemin="0" aria-valuemax="4" aria-valuenow="3" style="padding-bottom: 100%;">
+            <svg _ngcontent-ptb-c50="" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 250 250">
+               <circle _ngcontent-ptb-c50="" fill="none" cx="125" cy="125" r="121.5" style="stroke: rgb(234, 234, 234); stroke-width: 7;"></circle>
+               <path _ngcontent-ptb-c50="" fill="none" d="M 3.5000000001040945 125.00015904312804 A 121.5 121.5 0 1 0 125.00000000000001 3.5" style="stroke-width: 7; stroke: rgb(81, 185, 23); stroke-linecap: round;"></path>
+            </svg>
+         </round-progress>
+         <span _ngcontent-ptb-c62="" class="vacancy-text">
+            <span _ngcontent-ptb-c62="">
+               <!----> Open 
+            </span>
+            <!----><!----><!---->
+         </span>
+      </div>
+   </div>
+</div>

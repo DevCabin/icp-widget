@@ -20,6 +20,23 @@ All notable changes to this project will be documented in this file.
 - Content extraction issues by waiting for dynamic content to load
 - Memory and timeout issues in Vercel environment
 
+## [1.5.2] - 2024-03-19
+### Added
+- Preserved original Angular app class structure
+- Added complete CSS styling from Angular app
+- Added support for all card classes and layouts
+
+### Changed
+- Updated card extraction to capture full article structure
+- Enhanced CSS to match Angular app styling
+- Improved image handling with aspect ratio support
+- Maintained original class names for better compatibility
+
+### Fixed
+- Fixed card structure preservation
+- Resolved styling inconsistencies
+- Fixed image aspect ratio handling
+
 ## [1.5.1] - 2024-03-19
 ### Added
 - Switched from cheerio to Puppeteer for better handling of dynamic Angular content
