@@ -18,11 +18,18 @@ dist/
 .env.development.local
 .env.test.local
 .env.production.local
+.env
+*.log
+*.pid
+*.seed
+*.pid.lock
 
 # Logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+logs/
+*.log
 
 # Editor directories and files
 .idea/
@@ -32,3 +39,20 @@ yarn-error.log*
 *.njsproj
 *.sln
 *.sw?
+*.sublime-workspace
+*.sublime-project
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary files
+*.tmp
+*.temp
+.cache/
+.temp/
