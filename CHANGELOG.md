@@ -20,6 +20,23 @@ All notable changes to this project will be documented in this file.
 - Content extraction issues by waiting for dynamic content to load
 - Memory and timeout issues in Vercel environment
 
+## [1.5.3] - 2024-03-19
+### Added
+- Improved round progress circle styling (45px x 45px)
+- Enhanced weekday list layout and spacing
+- Added proper vertical alignment for all elements
+
+### Changed
+- Updated round progress container to float right
+- Adjusted weekday list to 50% width with 150px minimum
+- Improved spacing between elements
+- Fixed layout issues with waitlist circle and weekday list
+
+### Fixed
+- Resolved overlapping issues between elements
+- Fixed vertical alignment of text and elements
+- Improved overall card layout structure
+
 ## [1.5.2] - 2024-03-19
 ### Added
 - Preserved original Angular app class structure

@@ -192,14 +192,20 @@ module.exports = async function handler(req, res) {
                             text-decoration: none;
                         }
                         .list-week {
-                            display: flex;
-                            justify-content: space-between;
+                            display: inline-block;
                             list-style: none;
-                            padding: 0;
+                            padding: 7px 0;
                             margin: 10px 0;
+                            border-top: 1px solid #eee;
+                            width: 50%;
+                            min-width: 150px;
+                            vertical-align: middle;
                         }
                         .list-week li {
                             opacity: 0.5;
+                            font-size: 12px;
+                            float: left;
+                            padding: 0 5px;
                         }
                         .list-week li.active {
                             opacity: 1;
@@ -207,8 +213,11 @@ module.exports = async function handler(req, res) {
                         }
                         .round-progress-container {
                             position: relative;
-                            width: 100px;
-                            height: 100px;
+                            width: 45px;
+                            height: 45px;
+                            margin-right: 15px;
+                            vertical-align: middle;
+                            float: right;
                         }
                         .round-progress {
                             position: relative;
@@ -221,6 +230,7 @@ module.exports = async function handler(req, res) {
                             left: 50%;
                             transform: translate(-50%, -50%);
                             font-weight: 600;
+                            font-size: 9px;
                         }
                         .padding-top-small {
                             padding-top: 10px;
