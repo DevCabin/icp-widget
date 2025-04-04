@@ -102,21 +102,27 @@ All notable changes to this project will be documented in this file.
 - Resolved parameter handling bugs
 - Fixed error display formatting
 
-## [1.3.0] - 2024-03-19
+## [1.3.0] - 2024-04-04
 ### Added
-- Added support for multiple widget instances on the same page
-- Added container ID customization
-- Enhanced error handling
+- Enhanced loading animation with 5 rotating icons (⚡ 🤸 🥷 🧘 ✨)
+- Improved code organization and cleanup
 
 ### Changed
-- Updated widget initialization to handle multiple instances
-- Improved error messages
-- Enhanced styling for multiple widgets
+- Switched from axios to Puppeteer for server-side rendering of IClassPro content
+- Increased serverless function memory to 3008MB and duration to 30s
+- Added Vercel-specific Chrome configuration for Puppeteer
+- Increased timeouts for page loading and content extraction
+- Improved error handling and logging
+- Improved widget loading experience by starting API request immediately
+- Removed countdown timer in favor of continuous loading animation
+- Added performance timing logs for load time monitoring
+- Hidden "View Available Dates" links in the rendered content
+- Removed unused modal functionality and related code
 
 ### Fixed
-- Fixed container ID conflicts
-- Resolved styling issues with multiple widgets
-- Fixed error display for multiple instances
+- Serverless function crashes by properly handling Angular app rendering
+- Content extraction issues by waiting for dynamic content to load
+- Loading animation display issues
 
 ## [1.2.0] - 2024-03-19
 ### Added

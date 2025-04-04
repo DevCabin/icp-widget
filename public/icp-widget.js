@@ -1,3 +1,5 @@
+// ICP Widget v1.3.0
+// A simple widget to display IClassPro class schedules
 (function() {
     const script = document.currentScript;
     const config = {
@@ -16,7 +18,7 @@
         param2: config.param2,
         param3: config.param3
     });
-
+    
     // Create the widget container
     const widgetContainer = document.createElement('div');
     widgetContainer.id = config.containerId;
@@ -50,8 +52,8 @@
         height: 60px;
     `;
 
-    // Create three icons
-    const icons = ['⚡', '🎯', '✨'].map(icon => {
+    // Create five icons
+    const icons = ['⚡', '🤸', '🥷', '🧘', '✨'].map(icon => {
         const iconElement = document.createElement('div');
         iconElement.textContent = icon;
         iconElement.style.cssText = `

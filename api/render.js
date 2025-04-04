@@ -97,10 +97,106 @@ module.exports = async function handler(req, res) {
             console.log('Extracting card bodies');
             const cardBodies = await page.evaluate(() => {
                 const cards = document.querySelectorAll('article.card');
-                return Array.from(cards).map(card => card.outerHTML);
+                return Array.from(cards).map(card => {
+                    // Create a clone of the card to modify
+                    const cardClone = card.cloneNode(true);
+                    
+                    // Remove all image elements
+                    const imageElements = cardClone.querySelectorAll('.card-image-wrap, img');
+                    imageElements.forEach(img => img.remove());
+                    
+                    // Hide the "View Available Dates" links
+                    const dateLinks = cardClone.querySelectorAll('.text-link[data-toggle="modal"]');
+                    dateLinks.forEach(link => {
+                        link.style.display = 'none';
+                    });
+                    
+                    return cardClone.outerHTML;
+                });
             });
 
             console.log(`Found ${cardBodies.length} card bodies`);
+
+            // Add styles to the page
+            await page.addStyleTag({
+                content: `
+                    body {
+                        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+                        background-color: #f8f9fa;
+                        margin: 0;
+                        padding: 20px;
+                    }
+                    .card {
+                        background: white;
+                        border-radius: 8px;
+                        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                        margin-bottom: 20px;
+                        overflow: hidden;
+                    }
+                    .card-body {
+                        padding: 15px;
+                    }
+                    .row {
+                        display: flex;
+                        flex-wrap: wrap;
+                        margin-right: -15px;
+                        margin-left: -15px;
+                    }
+                    .col-12 {
+                        flex: 0 0 100%;
+                        max-width: 100%;
+                        padding-right: 15px;
+                        padding-left: 15px;
+                    }
+                    .card-image-wrap {
+                        position: relative;
+                        padding-top: 56.25%; /* 16:9 aspect ratio */
+                        overflow: hidden;
+                    }
+                    .img-center-crop {
+                        position: absolute;
+                        top: 0;
+                        left: 0;
+                        width: 100%;
+                        height: 100%;
+                        object-fit: cover;
+                    }
+                    .title {
+                        font-size: 18px;
+                        font-weight: 600;
+                        margin-bottom: 10px;
+                        color: #333;
+                    }
+                    .list-unstyled {
+                        list-style: none;
+                        padding-left: 0;
+                        margin-bottom: 0;
+                    }
+                    /* Hide all text-link elements */
+                    .text-link {
+                        display: none !important;
+                    }
+                    .round-progress-container {
+                        display: flex;
+                        align-items: center;
+                        margin-bottom: 10px;
+                    }
+                    .vacancy-text {
+                        margin-left: 10px;
+                        font-size: 14px;
+                        color: #666;
+                    }
+                    .list-week {
+                        display: flex;
+                        flex-wrap: wrap;
+                        margin: 0 -5px;
+                    }
+                    .list-week > li {
+                        padding: 0 5px;
+                        margin-bottom: 5px;
+                    }
+                `
+            });
 
             // Create response HTML
             const html = `
@@ -151,21 +247,6 @@ module.exports = async function handler(req, res) {
                             width: 100%;
                             padding: 0 15px;
                         }
-                        .card-image-wrap {
-                            position: relative;
-                            margin-bottom: 15px;
-                        }
-                        [data-aspect-ratio="2:1"] {
-                            padding-bottom: 50%;
-                        }
-                        .img-center-crop {
-                            position: absolute;
-                            top: 0;
-                            left: 0;
-                            width: 100%;
-                            height: 100%;
-                            object-fit: cover;
-                        }
                         .title {
                             font-size: 1.25rem;
                             font-weight: 600;
@@ -190,6 +271,7 @@ module.exports = async function handler(req, res) {
                         .text-link {
                             color: #007bff;
                             text-decoration: none;
+                            display: none !important;
                         }
                         .list-week {
                             display: inline-block;
