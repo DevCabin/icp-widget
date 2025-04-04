@@ -10,6 +10,10 @@ All notable changes to this project will be documented in this file.
 - Added Vercel-specific Chrome configuration for Puppeteer
 - Increased timeouts for page loading and content extraction
 - Improved error handling and logging
+- Improved widget loading experience by starting API request immediately
+- Removed countdown timer in favor of continuous loading animation
+- Added performance timing logs for load time monitoring
+- Current stable pre-work point for v1.5.2 (6-7s load time identified)
 
 ### Fixed
 - Serverless function crashes by properly handling Angular app rendering

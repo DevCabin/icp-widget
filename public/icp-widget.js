@@ -64,23 +64,12 @@
         return iconElement;
     });
 
-    // Create countdown timer
-    const timerElement = document.createElement('div');
-    timerElement.style.cssText = `
-        font-family: monospace;
-        font-size: 18px;
-        color: #666;
-        margin-top: 10px;
-    `;
-
     loadingContainer.appendChild(iconsContainer);
-    loadingContainer.appendChild(timerElement);
     widgetContainer.appendChild(loadingContainer);
 
     // Start the loading animation
     let currentIconIndex = 0;
     let startTime = Date.now();
-    const duration = 3000; // 3 seconds
 
     const animateIcons = () => {
         icons.forEach((icon, index) => {
@@ -89,27 +78,11 @@
         currentIconIndex = (currentIconIndex + 1) % icons.length;
     };
 
-    // Single interval for both countdown and animation
-    const interval = setInterval(() => {
-        // Update timer
-        const elapsed = Date.now() - startTime;
-        const remaining = Math.max(0, duration - elapsed);
-        const seconds = Math.floor(remaining / 1000);
-        const milliseconds = remaining % 1000;
-        timerElement.textContent = `${seconds}.${milliseconds.toString().padStart(3, '0')}`;
+    // Start loading content immediately
+    loadContent();
 
-        // Animate icon every second
-        if (elapsed % 1000 < 50) { // Check if we're at the start of a second
-            animateIcons();
-        }
-
-        // Check if we're done
-        if (remaining <= 0) {
-            clearInterval(interval);
-            timerElement.textContent = '0.000';
-            loadContent();
-        }
-    }, 10);
+    // Animate icons every second
+    const interval = setInterval(animateIcons, 1000);
 
     // Initial icon state
     animateIcons();
@@ -144,6 +117,8 @@
                 background: white;
                 border-radius: 8px;
                 box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+                opacity: 0;
+                transition: opacity 0.3s ease;
             `;
 
             // Set the iframe source
@@ -161,9 +136,22 @@
                 }
             });
 
-            // Replace loading animation with iframe
-            widgetContainer.innerHTML = '';
+            // Add iframe to container but keep it hidden
             widgetContainer.appendChild(iframe);
+
+            // Wait for iframe to load
+            iframe.onload = () => {
+                const loadTime = Date.now() - startTime;
+                console.log(`Content loaded in ${loadTime}ms`);
+                
+                // Fade in the iframe
+                iframe.style.opacity = '1';
+                // Remove loading animation after a short delay
+                setTimeout(() => {
+                    clearInterval(interval);
+                    loadingContainer.remove();
+                }, 300);
+            };
 
         } catch (error) {
             console.error('Widget Error:', error);
