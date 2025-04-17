@@ -1,28 +1,18 @@
 {
   "version": 2,
-  "builds": [
-    {
-      "src": "server.js",
-      "use": "@vercel/node"
-    },
-    {
-      "src": "public/**",
-      "use": "@vercel/static"
-    }
-  ],
+  "public": true,
   "routes": [
     {
-      "src": "/api/(.*)",
-      "dest": "server.js"
+      "src": "/",
+      "dest": "/public/test.html"
+    },
+    {
+      "src": "/test.html",
+      "dest": "/public/test.html"
     },
     {
       "src": "/icp-widget.js",
       "dest": "/public/icp-widget.js"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/public/$1"
     }
   ]
 }
-

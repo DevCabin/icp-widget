@@ -1,10 +1,6 @@
-import express from 'express';
-import fetch from 'node-fetch';
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
-
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
+const express = require('express');
+const axios = require('axios');
+const path = require('path');
 
 const app = express();
 
@@ -31,7 +27,7 @@ async function fetchClassesFromAPI(accountName, params = {}) {
     const url = `${baseUrl}/${accountName}/classes?${queryParams}`;
     console.log('Fetching from API:', url);
 
-    const response = await fetch(url, {
+    const response = await axios.get(url, {
         headers: {
             'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
             'Accept': 'application/json',
@@ -41,11 +37,7 @@ async function fetchClassesFromAPI(accountName, params = {}) {
         }
     });
 
-    if (!response.ok) {
-        throw new Error(`API responded with status ${response.status}`);
-    }
-
-    return response.json();
+    return response.data;
 }
 
 // Test endpoint

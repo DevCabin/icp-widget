@@ -26,12 +26,6 @@ async function fetchClassesFromAPI(accountName, params = {}) {
 }
 
 module.exports = async function handler(req, res) {
-    console.log('Received request:', {
-        method: req.method,
-        query: req.query,
-        headers: req.headers
-    });
-
     // Set CORS headers
     res.setHeader('Access-Control-Allow-Origin', '*');
     res.setHeader('Access-Control-Allow-Methods', 'GET, OPTIONS');
@@ -94,4 +88,4 @@ module.exports = async function handler(req, res) {
             query: req.query
         });
     }
-};
+}; 
