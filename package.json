@@ -1,26 +1,24 @@
 {
   "name": "icp-widget",
-  "version": "3.0.0",
-  "description": "IClassPro Widget - Stable API Integration",
-  "main": "server.js",
-  "type": "module",
+  "version": "3.3.3",
+  "description": "A lightweight widget for embedding IClassPro class schedules",
+  "main": "public/icp-widget.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "nodemon server.js",
-    "build": "mkdir -p dist && cp -r public/* dist/ && cp server.js dist/"
+    "start": "vercel dev",
+    "build": "echo 'No build step required'"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "cheerio": "^1.0.0",
-    "express": "^4.18.2",
-    "node-fetch": "^3.3.2"
+    "axios": "^1.6.7",
+    "cors": "^2.8.5",
+    "express": "^4.18.3"
   },
   "devDependencies": {
-    "nodemon": "^2.0.20"
+    "vercel": "^33.0.0"
   },
   "engines": {
-    "node": ">=18.x"
+    "node": ">=18.0.0"
   }
 }
