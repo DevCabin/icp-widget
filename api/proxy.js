@@ -1,5 +1,5 @@
-const puppeteer = require('puppeteer-core');
-const chrome = require('@sparticuz/chromium');
+import puppeteer from 'puppeteer-core';
+import chrome from '@sparticuz/chromium';
 
 export default async function handler(req, res) {
     // Set CORS headers
@@ -17,24 +17,15 @@ export default async function handler(req, res) {
         return res.status(405).json({ error: 'Method not allowed' });
     }
 
-    const { accountName, param1, param2, param3, param4 } = req.query;
+    const { url } = req.query;
 
-    if (!accountName) {
-        return res.status(400).json({ error: 'Account name is required' });
+    if (!url) {
+        return res.status(400).json({ error: 'URL parameter is required' });
     }
 
     let browser = null;
     try {
-        // Construct the URL with query parameters
-        let url = `https://portal.iclasspro.com/${accountName}/classes`;
-        if (param1) url += `?${param1}`;
-        if (param2) url += `${param1 ? '&' : '?'}${param2}`;
-        if (param3) url += `&${param3}`;
-        if (param4) url += `&${param4}`;
-
-        console.log('Fetching URL:', url);
-
-        // Launch browser with special configuration for serverless
+        console.log('Launching browser...');
         browser = await puppeteer.launch({
             args: chrome.args,
             defaultViewport: chrome.defaultViewport,
@@ -43,39 +34,50 @@ export default async function handler(req, res) {
             ignoreHTTPSErrors: true,
         });
 
+        console.log('Creating new page...');
         const page = await browser.newPage();
         
         // Set viewport
         await page.setViewport({ width: 1280, height: 800 });
 
-        // Navigate to the page
-        await page.goto(url, { waitUntil: 'networkidle0', timeout: 30000 });
+        console.log('Navigating to URL:', decodeURIComponent(url));
+        await page.goto(decodeURIComponent(url), { waitUntil: 'networkidle0', timeout: 30000 });
 
-        // Wait for the classes to load
-        await page.waitForSelector('article.card .card-body', { timeout: 10000 });
+        // Wait for 3 seconds to allow Angular to render
+        console.log('Waiting for 3 seconds...');
+        await page.waitForTimeout(3000);
+
+        // Wait for class cards to be visible
+        console.log('Waiting for class cards...');
+        await page.waitForSelector('article.card', { timeout: 5000 });
 
         // Get the classes HTML
+        console.log('Extracting class data...');
         const classes = await page.evaluate(() => {
-            const cards = document.querySelectorAll('article.card .card-body');
-            return Array.from(cards).map(card => ({
-                html: card.outerHTML
-            }));
+            const cards = document.querySelectorAll('article.card');
+            return Array.from(cards).map(card => {
+                const title = card.querySelector('h3')?.textContent || 'Untitled Class';
+                const description = card.querySelector('p')?.textContent || 'No description available';
+                return {
+                    name: title,
+                    description: description
+                };
+            });
         });
 
+        console.log('Found classes:', classes.length);
         return res.status(200).json({ classes });
+
     } catch (error) {
-        console.error('Detailed Error:', {
-            message: error.message,
-            stack: error.stack,
-            name: error.name
-        });
+        console.error('Error:', error);
         return res.status(500).json({
-            error: 'Failed to fetch class data',
+            error: 'Failed to fetch data',
             message: error.message,
-            details: error.stack
+            stack: error.stack
         });
     } finally {
         if (browser) {
+            console.log('Closing browser...');
             await browser.close();
         }
     }

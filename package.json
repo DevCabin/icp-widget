@@ -1,1 +1,26 @@
-{"name":"icp-widget","version":"1.0.0","description":"iClassPro Widget for embedding class schedules","main":"index.js","scripts":{"dev":"vercel dev","deploy":"vercel deploy","test":"echo \"Error: no test specified\" && exit 1"},"keywords":[],"author":"","license":"ISC","dependencies":{"@sparticuz/chromium":"^133.0.0","axios":"^1.6.7","cheerio":"^1.0.0-rc.12","puppeteer-core":"^24.4.0"},"devDependencies":{"vercel":"^32.0.0"}}
+{
+  "name": "icp-widget",
+  "version": "3.0.0",
+  "description": "IClassPro Widget - Stable API Integration",
+  "main": "server.js",
+  "type": "module",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js",
+    "build": "mkdir -p dist && cp -r public/* dist/ && cp server.js dist/"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "cheerio": "^1.0.0",
+    "express": "^4.18.2",
+    "node-fetch": "^3.3.2"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.20"
+  },
+  "engines": {
+    "node": ">=18.x"
+  }
+}

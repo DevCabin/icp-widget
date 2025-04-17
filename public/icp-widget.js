@@ -1,33 +1,22 @@
 (function() {
     const script = document.currentScript;
     const config = {
-        containerId: script.getAttribute("data-container-id") || "icp-widget-container",
         accountName: script.getAttribute("data-account-name"),
         param1: script.getAttribute("data-param1"),
         param2: script.getAttribute("data-param2"),
         param3: script.getAttribute("data-param3"),
-        param4: script.getAttribute("data-param4")
+        param4: script.getAttribute("data-param4"),
+        containerId: script.getAttribute("data-container-id") || "icp-widget-container"
     };
 
-    // Log the widget configuration
-    console.log('Widget Configuration:', {
-        containerId: config.containerId,
-        accountName: config.accountName,
-        param1: config.param1,
-        param2: config.param2,
-        param3: config.param3,
-        param4: config.param4
-    });
+    if (!config.accountName) {
+        console.error("IClassPro Widget: Missing required parameter. Please provide data-account-name.");
+        return;
+    }
 
-    // Create the widget container
-    const widgetContainer = document.createElement('div');
+    const widgetContainer = document.createElement("div");
     widgetContainer.id = config.containerId;
-    widgetContainer.style.cssText = `
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 20px;
-    `;
+    widgetContainer.style.cssText = "font-family: -apple-system, BlinkMacSystemFont, \"Segoe UI\", Roboto, Oxygen, Ubuntu, Cantarell, \"Open Sans\", \"Helvetica Neue\", sans-serif; max-width: 800px; margin: 0 auto; padding: 20px;";
 
     // Create loading animation
     const loadingContainer = document.createElement('div');
@@ -42,157 +31,94 @@
         box-shadow: 0 2px 4px rgba(0,0,0,0.1);
     `;
 
-    // Create icons container
-    const iconsContainer = document.createElement('div');
-    iconsContainer.style.cssText = `
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        margin-bottom: 20px;
-        height: 60px;
-    `;
-
-    // Create three icons
-    const icons = ['⚡', '🎯', '✨'].map(icon => {
-        const iconElement = document.createElement('div');
-        iconElement.textContent = icon;
-        iconElement.style.cssText = `
-            font-size: 48px;
-            opacity: 0;
-            transition: opacity 0.3s ease;
-            position: absolute;
-        `;
-        iconsContainer.appendChild(iconElement);
-        return iconElement;
-    });
-
-    // Create countdown timer
-    const timerElement = document.createElement('div');
-    timerElement.style.cssText = `
-        font-family: monospace;
-        font-size: 18px;
-        color: #666;
-        margin-top: 10px;
-    `;
-
-    loadingContainer.appendChild(iconsContainer);
-    loadingContainer.appendChild(timerElement);
+    const loadingMessage = document.createElement('div');
+    loadingMessage.textContent = 'Loading classes...';
+    loadingMessage.style.cssText = 'margin-top: 10px; color: #666;';
+    
+    loadingContainer.appendChild(loadingMessage);
     widgetContainer.appendChild(loadingContainer);
+    
+    script.parentNode.insertBefore(widgetContainer, script);
 
-    // Start the loading animation
-    let currentIconIndex = 0;
-    let startTime = Date.now();
-    const duration = 5000; // 5 seconds
-
-    const updateTimer = () => {
-        const elapsed = Date.now() - startTime;
-        const remaining = Math.max(0, duration - elapsed);
-        const seconds = Math.floor(remaining / 1000);
-        const milliseconds = Math.floor((remaining % 1000));
-        timerElement.textContent = `${seconds}.${milliseconds.toString().padStart(3, '0')}`;
-    };
-
-    const animateIcons = () => {
-        icons.forEach((icon, index) => {
-            icon.style.opacity = index === currentIconIndex ? '1' : '0';
-        });
-        currentIconIndex = (currentIconIndex + 1) % icons.length;
-    };
-
-    // Initial icon animation
-    animateIcons();
-
-    // Start the countdown timer
-    let timeLeft = 5000; // 5 seconds
-    const timerInterval = setInterval(() => {
-        timeLeft -= 10;
-        const seconds = Math.floor(timeLeft / 1000);
-        const milliseconds = timeLeft % 1000;
-        timerElement.textContent = `${seconds}.${milliseconds.toString().padStart(3, '0')}`;
-        if (timeLeft <= 0) {
-            clearInterval(timerInterval);
-            timerElement.textContent = '0.000';
-            loadContent();
-        }
-    }, 10);
-
-    // Start the icon animation
-    const iconInterval = setInterval(animateIcons, 1000);
-
-    // Function to load content
-    async function loadContent() {
+    async function loadClasses() {
         try {
-            const params = new URLSearchParams({
-                accountName: config.accountName,
-                param1: config.param1,
-                param2: config.param2
-            });
-            if (config.param3) params.append('param3', config.param3);
-            if (config.param4) params.append('param4', config.param4);
+            // Extract parameters
+            const params = new URLSearchParams();
+            
+            // Parse param1 and param2 for levels and programs
+            if (config.param1) {
+                const [key, value] = config.param1.split('=');
+                if (key === 'levels') params.append('levels', value);
+            }
+            if (config.param2) {
+                const [key, value] = config.param2.split('=');
+                if (key === 'programs') params.append('programs', value);
+            }
 
-            // Log the query parameters
-            console.log('Widget Query Parameters:', {
-                accountName: config.accountName,
-                param1: config.param1,
-                param2: config.param2,
-                param3: config.param3,
-                param4: config.param4,
-                fullUrl: `https://icp-widget.vercel.app/api/render?${params}`
-            });
+            // Get the base URL for the proxy
+            const baseUrl = window.location.hostname === 'localhost' 
+                ? 'http://localhost:3000' 
+                : 'https://icp-widget.vercel.app';
 
-            // Create and configure iframe
-            const iframe = document.createElement('iframe');
-            iframe.style.cssText = `
-                width: 100%;
-                height: 600px;
-                border: none;
-                background: white;
-                border-radius: 8px;
-                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-            `;
+            console.log('Fetching classes...');
+            
+            // Make the request through our proxy
+            const response = await fetch(`${baseUrl}/api/proxy?accountName=${config.accountName}&${params.toString()}`);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
+            }
+            
+            const data = await response.json();
+            console.log('Received data:', data);
+            
+            if (data && data.classes && data.classes.length > 0) {
+                const content = data.classes.map(cls => {
+                    const schedule = cls.schedule[0];
+                    const status = cls.openings > 0 
+                        ? `<span style="color: #4CAF50;">Open (${cls.openings} spots)</span>` 
+                        : (cls.allowWaitlist ? '<span style="color: #FFA726;">Waitlist Available</span>' : '<span style="color: #F44336;">Full</span>');
+                    
+                    const registerUrl = `https://portal.iclasspro.com/${config.accountName}/classes/${cls.id}`;
+                    
+                    return `
+                        <div style="border: 1px solid #eee; border-radius: 8px; padding: 15px; margin-bottom: 15px; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start;">
+                                <h3 style="margin: 0; color: #333; flex: 1;">${cls.name}</h3>
+                                <div style="text-align: right;">
+                                    ${status}
+                                </div>
+                            </div>
+                            <div style="margin-top: 10px; color: #666;">
+                                <strong>${schedule.dayName}</strong> ${schedule.startTime} - ${schedule.endTime}
+                            </div>
+                            <div style="margin-top: 10px;">
+                                <a href="${registerUrl}" target="_blank" style="display: inline-block; padding: 8px 16px; background: #1b7ecf; color: white; text-decoration: none; border-radius: 4px; font-size: 14px;">
+                                    View Class Details
+                                </a>
+                            </div>
+                        </div>
+                    `;
+                }).join("");
 
-            // Set the iframe source
-            iframe.src = `https://icp-widget.vercel.app/api/render?${params}`;
-            console.log('Loading iframe with URL:', iframe.src);
-
-            // Listen for height updates from the iframe
-            window.addEventListener('message', (event) => {
-                if (event.data.type === 'iframeHeight') {
-                    console.log('Received height update:', event.data.height);
-                    iframe.style.height = `${event.data.height}px`;
-                }
-            });
-
-            // Replace loading animation with iframe
-            widgetContainer.innerHTML = '';
-            widgetContainer.appendChild(iframe);
-
+                widgetContainer.innerHTML = `
+                    <h2 style="text-align: center; margin-bottom: 20px; color: #333;">Available Classes</h2>
+                    ${content}
+                `;
+            } else {
+                widgetContainer.innerHTML = "<div style=\"text-align: center; padding: 20px; color: #666;\">No classes available at the moment.</div>";
+            }
         } catch (error) {
-            console.error('Widget Error:', error);
+            console.error("Error loading classes:", error);
             widgetContainer.innerHTML = `
-                <div style="
-                    text-align: center;
-                    padding: 20px;
-                    color: #dc3545;
-                    background: white;
-                    border-radius: 8px;
-                    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-                ">
-                    <div style="font-size: 18px; margin-bottom: 10px;">Unable to load classes</div>
-                    <div style="font-size: 14px; color: #666;">Please try again later</div>
+                <div style="text-align: center; padding: 20px; color: #ff4444;">
+                    <p>Error loading classes. Please try again later.</p>
+                    <p style="font-size: 0.8em; color: #666; margin-top: 10px;">Error details: ${error.message}</p>
                 </div>
             `;
         }
     }
 
-    // Wait for the delay and load content
-    setTimeout(() => {
-        clearInterval(timerInterval);
-        clearInterval(iconInterval);
-        console.log('Delay completed. Duration:', (Date.now() - startTime) / 1000, 'seconds');
-        loadContent();
-    }, duration);
-
-    // Add the container to the page
-    script.parentNode.insertBefore(widgetContainer, script);
+    // Start loading after a short delay to ensure the widget is properly mounted
+    setTimeout(loadClasses, 100);
 })();

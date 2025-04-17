@@ -1,70 +1,81 @@
-# IClassPro Widget
+# IClassPro Widget v3.0.0
 
-A lightweight widget for embedding IClassPro class schedules on any website. This widget fetches and displays class information from IClassPro's portal, with support for filtering and custom styling.
+A lightweight, embeddable widget that displays IClassPro class schedules on any website. This widget uses IClassPro's API to fetch and display class information with real-time availability.
 
 ## Features
 
-- Server-side rendering for better performance
-- Support for filtering by gender, program, and other parameters
-- Responsive design that works on all devices
-- Automatic height adjustment
-- Clean, modern styling
-- CORS-enabled for cross-origin embedding
+- Direct API integration with IClassPro
+- Real-time class availability
+- Clean, modern design
+- Responsive layout
+- Easy to embed
+- No dependencies required
+- Customizable appearance
 
-## Installation
+## Quick Start
 
-1. Add the widget script to your HTML:
+Add this script to your HTML where you want the widget to appear:
+
 ```html
 <script 
     src="https://icp-widget.vercel.app/icp-widget.js"
-    data-account-name="your-account-name"
-    data-param1="genders=2"
-    data-param2="programs=56"
+    data-account-name="YOUR_ACCOUNT"
+    data-param1="levels=YOUR_LEVEL"
+    data-param2="programs=YOUR_PROGRAM"
     data-container-id="icp-widget-container">
 </script>
 ```
 
-2. Add a container element where you want the widget to appear:
-```html
-<div id="icp-widget-container"></div>
-```
+### Required Parameters
 
-## Configuration
-
-The widget accepts the following data attributes:
-
-- `data-account-name`: Your IClassPro account name (required)
-- `data-param1`: First filter parameter (e.g., "genders=2")
-- `data-param2`: Second filter parameter (e.g., "programs=56")
-- `data-param3`: Third filter parameter
-- `data-param4`: Fourth filter parameter
-- `data-container-id`: ID of the container element (defaults to "icp-widget-container")
+- `data-account-name`: Your IClassPro account name
+- `data-param1`: Level parameter (e.g., "levels=4")
+- `data-param2`: Program parameter (e.g., "programs=56")
+- `data-container-id`: (Optional) ID for the widget container
 
 ## Development
 
-This project is built with:
-- Vercel for serverless deployment
-- Axios for HTTP requests
-- Cheerio for HTML parsing
-- Vanilla JavaScript for client-side functionality
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/icp-widget.git
+cd icp-widget
+```
 
-### Local Development
-
-1. Clone the repository
 2. Install dependencies:
 ```bash
 npm install
 ```
 
-3. Run the development server:
+3. Start development server:
 ```bash
 npm run dev
 ```
 
-4. Deploy to Vercel:
+4. Open http://localhost:3000/example.html to test
+
+## Deployment
+
+The widget is designed to be deployed to Vercel:
+
+1. Push to GitHub
+2. Connect to Vercel
+3. Deploy
+
+## Testing
+
+Test the widget locally:
 ```bash
-npm run deploy
+npm run dev
+open http://localhost:3000/example.html
 ```
+
+## Version History
+
+### 3.0.0 - Stable API Integration
+- Direct integration with IClassPro API
+- Improved reliability and performance
+- Real-time class availability
+- Clean, modern UI
 
 ## License
 
