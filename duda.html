@@ -1,0 +1,75 @@
+<div class="iclasspro-widget">
+    {{#if showHeader}}
+    <header class="widget-header">
+      <h2 class="header-title">{{headerTitle}}</h2>
+      {{#if headerSubtitle}}
+      <p class="header-subtitle">{{headerSubtitle}}</p>
+      {{/if}}
+    </header>
+    {{/if}}
+    
+    <div class="classes-container">
+      <div class="loading-state" id="loadingState">
+        <div class="loading-spinner"></div>
+        <p>Loading classes...</p>
+      </div>
+      
+      <div class="error-state hidden" id="errorState">
+        <div class="error-message">
+          <h3>Unable to Load Classes</h3>
+          <p id="errorDescription">Checking connection to iClassPro...</p>
+          <div class="setup-instructions hidden" id="setupInstructions">
+            <h4>Setup Required:</h4>
+            <ol>
+              <li>Deploy the proxy to Vercel using this code:</li>
+              <li>Add your proxy URL in the widget settings</li>
+              <li>Configure your iClassPro account name</li>
+            </ol>
+            <details>
+              <summary>View Proxy Code</summary>
+              <pre><code>
+  # api/iclasspro.py
+  from http.server import BaseHTTPRequestHandler
+  import requests
+  import json
+  
+  class handler(BaseHTTPRequestHandler):
+      def do_GET(self):
+          # Parse account from query params
+          account = self.path.split('account=')[1] if 'account=' in self.path else 'demo'
+          
+          # Make request to iClassPro
+          iclasspro_url = f"https://portal.iclasspro.com/{account}/classes"
+          
+          try:
+              response = requests.get(iclasspro_url)
+              data = response.json() if response.headers.get('content-type', '').startswith('application/json') else []
+          except:
+              data = []
+          
+          # Return with CORS headers
+          self.send_response(200)
+          self.send_header('Access-Control-Allow-Origin', '*')
+          self.send_header('Content-type', 'application/json')
+          self.end_headers()
+          self.wfile.write(json.dumps(data).encode())
+              </code></pre>
+            </details>
+          </div>
+          <button class="retry-btn" id="retryBtn">Try Again</button>
+        </div>
+      </div>
+      
+      <div class="classes-grid hidden" id="classesGrid">
+        <!-- Classes will be populated here by JavaScript -->
+      </div>
+    </div>
+    
+    {{#if showFooter}}
+    <footer class="widget-footer">
+      {{#custom_link footerLink}}
+        <span class="footer-text">{{footerText}}</span>
+      {{/custom_link}}
+    </footer>
+    {{/if}}
+  </div>

@@ -178,6 +178,7 @@ class handler(BaseHTTPRequestHandler):
                 # If no classes found in HTML, return empty array
                 if len(classes) == 0:
                     print("No classes found in HTML - iClassPro requires JavaScript rendering")
+                    classes = []
                 
                 data = {
                     "classes": classes,
