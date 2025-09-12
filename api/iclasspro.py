@@ -7,7 +7,11 @@ class handler(BaseHTTPRequestHandler):
     def do_GET(self):
         qs = parse_qs(urlparse(self.path).query)
         account = qs.get('account', ['demo'])[0]
-        iclasspro_url = f"https://portal.iclasspro.com/{account}/classes"
+        genders = qs.get('genders', ['2'])[0]  # Default to '2' like V1
+        programs = qs.get('programs', ['56'])[0]  # Default to '56' like V1
+
+        # Make request to iClassPro with required parameters
+        iclasspro_url = f"https://portal.iclasspro.com/{account}/classes?genders={genders}&programs={programs}"
         try:
             print(f"Fetching from: {iclasspro_url}")
             response = requests.get(iclasspro_url, headers={
