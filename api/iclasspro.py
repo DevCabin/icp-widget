@@ -11,18 +11,25 @@ class handler(BaseHTTPRequestHandler):
         genders = qs.get('genders', ['2'])[0]  # Default to '2' like V1
         programs = qs.get('programs', ['56'])[0]  # Default to '56' like V1
 
-        # Try the portal URL first since it shows actual classes
-        portal_url = f"https://portal.iclasspro.com/{account}/classes"
-        api_url = f"https://app.iclasspro.com/api/open/v1/{account}/classes?locationId=1&limit=24&page=1&programs={programs}&levels={genders}"
+        # Use the same API endpoint as V1 (which worked!)
+        api_url = f"https://app.iclasspro.com/api/open/v1/{account}/classes?locationId=1&limit=50&page=1"
         
-        # Try portal URL first since it shows actual classes
-        iclasspro_url = portal_url
-        print(f"Trying portal URL: {iclasspro_url}")
+        # Add programs and levels if provided (like V1)
+        if programs != '56':  # Only add if not default
+            api_url += f"&programs={programs}"
+        if genders != '2':  # Only add if not default  
+            api_url += f"&levels={genders}"
+            
+        iclasspro_url = api_url
+        print(f"Using V1 API approach: {iclasspro_url}")
         try:
             print(f"Fetching from: {iclasspro_url}")
             response = requests.get(iclasspro_url, headers={
-                'User-Agent': 'Mozilla/5.0 (compatible; ICP-Widget/1.0)',
-                'Accept': 'application/json, text/html, */*'
+                'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
+                'Accept': 'application/json',
+                'Accept-Language': 'en-US,en;q=0.5',
+                'Referer': 'https://portal.iclasspro.com/',
+                'Origin': 'https://portal.iclasspro.com'
             })
             print(f"Response status: {response.status_code}")
             print(f"Response headers: {dict(response.headers)}")
@@ -33,18 +40,41 @@ class handler(BaseHTTPRequestHandler):
                 api_response = response.json()
                 print(f"API response: {api_response}")
                 
-                # Handle the IClassPro API response structure
-                if 'data' in api_response:
-                    classes = api_response['data']
+                # Transform the API response to match V1 format
+                if 'data' in api_response and api_response['data']:
+                    classes = []
+                    for classItem in api_response['data']:
+                        classes.append({
+                            'id': classItem.get('id', ''),
+                            'name': classItem.get('name', ''),
+                            'schedule': classItem.get('schedule', ''),
+                            'openings': classItem.get('openings', 0),
+                            'allowWaitlist': classItem.get('allowWaitlist', False),
+                            'instructors': classItem.get('instructors', []),
+                            'startDate': classItem.get('startDate', ''),
+                            'endDate': classItem.get('endDate', ''),
+                            'description': classItem.get('description', ''),
+                            'capacity': classItem.get('capacity', 0),
+                            'enrolled': classItem.get('enrolled', 0),
+                            'price': classItem.get('price', '')
+                        })
+                    
                     data = {
                         "classes": classes,
                         "total": len(classes),
                         "totalRecords": api_response.get('totalRecords', 0),
-                        "source": "iclasspro_api",
+                        "source": "iclasspro_api_v1_method",
                         "status": response.status_code
                     }
                 else:
-                    data = api_response
+                    data = {
+                        "classes": [],
+                        "total": 0,
+                        "totalRecords": api_response.get('totalRecords', 0),
+                        "source": "iclasspro_api_v1_method",
+                        "status": response.status_code,
+                        "message": "No classes found in API response"
+                    }
             else:
                 # Parse HTML response to extract class data
                 html_content = response.text
@@ -145,35 +175,9 @@ class handler(BaseHTTPRequestHandler):
                             if classes:
                                 break
                 
-                # If no classes found in HTML, return demo data for testing
+                # If no classes found in HTML, return empty array
                 if len(classes) == 0:
-                    classes = [
-                        {
-                            "id": "demo_1",
-                            "name": "Water Babies (Parent & Me)",
-                            "instructor": "Sarah Martinez",
-                            "time": "10:00 AM - 10:30 AM",
-                            "date": "Monday & Wednesday",
-                            "description": "Gentle introduction to water for infants and toddlers with parent participation.",
-                            "ageGroup": "Ages 6 months - 2 years",
-                            "capacity": 8,
-                            "enrolled": 6,
-                            "price": "$65/month"
-                        },
-                        {
-                            "id": "demo_2",
-                            "name": "Beginner Swimmers",
-                            "instructor": "Coach Mike Thompson",
-                            "time": "4:00 PM - 4:30 PM",
-                            "date": "Tuesday & Thursday",
-                            "description": "Learn basic water safety, floating, and beginning stroke techniques.",
-                            "ageGroup": "Ages 3-5",
-                            "capacity": 6,
-                            "enrolled": 5,
-                            "price": "$75/month"
-                        }
-                    ]
-                    print("Added demo data - no classes found in HTML")
+                    print("No classes found in HTML - iClassPro requires JavaScript rendering")
                 
                 data = {
                     "classes": classes,
