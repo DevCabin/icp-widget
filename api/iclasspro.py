@@ -12,7 +12,7 @@ class handler(BaseHTTPRequestHandler):
         programs = qs.get('programs', ['56'])[0]  # Default to '56' like V1
 
         # Try the portal URL first since it shows actual classes
-        portal_url = f"https://portal.iclasspro.com/{account}/classes?genders={genders}&programs={programs}"
+        portal_url = f"https://portal.iclasspro.com/{account}/classes"
         api_url = f"https://app.iclasspro.com/api/open/v1/{account}/classes?locationId=1&limit=24&page=1&programs={programs}&levels={genders}"
         
         # Try portal URL first since it shows actual classes
