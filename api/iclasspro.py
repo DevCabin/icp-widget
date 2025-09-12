@@ -177,10 +177,10 @@ class handler(BaseHTTPRequestHandler):
                 data = {
                     "classes": classes,
                     "total": len(classes),
-                    "source": "demo_fallback" if not classes else "html_parsing",
+                    "source": "demo_fallback" if len(classes) > 0 and classes[0].get('id', '').startswith('demo_') else "html_parsing",
                     "content_type": response.headers.get('content-type'),
                     "status": response.status_code,
-                    "note": "Using demo data - iClassPro requires JavaScript rendering for live data"
+                    "note": "Using demo data - iClassPro requires JavaScript rendering for live data" if len(classes) > 0 and classes[0].get('id', '').startswith('demo_') else "Parsed from HTML"
                 }
         except Exception as e:
             print("Error fetching from API endpoint:", e)
