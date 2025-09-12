@@ -30,7 +30,21 @@ class handler(BaseHTTPRequestHandler):
             print(f"Response text (first 200 chars): {response.text[:200]}")
             
             if response.headers.get('content-type', '').startswith('application/json'):
-                data = response.json()
+                api_response = response.json()
+                print(f"API response: {api_response}")
+                
+                # Handle the IClassPro API response structure
+                if 'data' in api_response:
+                    classes = api_response['data']
+                    data = {
+                        "classes": classes,
+                        "total": len(classes),
+                        "totalRecords": api_response.get('totalRecords', 0),
+                        "source": "iclasspro_api",
+                        "status": response.status_code
+                    }
+                else:
+                    data = api_response
             else:
                 # Parse HTML response to extract class data
                 html_content = response.text
@@ -116,7 +130,64 @@ class handler(BaseHTTPRequestHandler):
                 }
         except Exception as e:
             print("Error fetching from API endpoint:", e)
-            # Try the portal URL as fallback
+            # Try API without restrictive parameters
+            try:
+                simple_api_url = f"https://app.iclasspro.com/api/open/v1/{account}/classes?locationId=1&limit=24&page=1"
+                print(f"Trying simple API: {simple_api_url}")
+                response = requests.get(simple_api_url, headers={
+                    'User-Agent': 'Mozilla/5.0 (compatible; ICP-Widget/1.0)',
+                    'Accept': 'application/json, text/html, */*'
+                })
+                
+                if response.headers.get('content-type', '').startswith('application/json'):
+                    api_response = response.json()
+                    print(f"Simple API response: {api_response}")
+                    
+                    if 'data' in api_response and api_response['data']:
+                        classes = api_response['data']
+                        data = {
+                            "classes": classes,
+                            "total": len(classes),
+                            "totalRecords": api_response.get('totalRecords', 0),
+                            "source": "iclasspro_api_simple",
+                            "status": response.status_code
+                        }
+                    else:
+                        # Still no data, use demo
+                        data = {
+                            "classes": [
+                                {
+                                    "name": "Water Babies (Parent & Me)",
+                                    "instructor": "Sarah Martinez",
+                                    "time": "10:00 AM - 10:30 AM",
+                                    "date": "Monday & Wednesday",
+                                    "description": "Gentle introduction to water for infants and toddlers with parent participation.",
+                                    "ageGroup": "Ages 6 months - 2 years",
+                                    "capacity": 8,
+                                    "enrolled": 6,
+                                    "price": "$65/month"
+                                },
+                                {
+                                    "name": "Beginner Swimmers",
+                                    "instructor": "Coach Mike Thompson", 
+                                    "time": "4:00 PM - 4:30 PM",
+                                    "date": "Tuesday & Thursday",
+                                    "description": "Learn basic water safety, floating, and beginning stroke techniques.",
+                                    "ageGroup": "Ages 3-5",
+                                    "capacity": 6,
+                                    "enrolled": 5,
+                                    "price": "$75/month"
+                                }
+                            ],
+                            "total": 2,
+                            "source": "demo_fallback",
+                            "note": "No classes found in API - using demo data"
+                        }
+                else:
+                    raise Exception("Simple API also returned non-JSON")
+            except Exception as e2:
+                print("Simple API also failed:", e2)
+                # Try the portal URL as fallback
             try:
                 print(f"Trying portal fallback: {portal_url}")
                 response = requests.get(portal_url, headers={
