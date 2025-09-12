@@ -146,7 +146,7 @@ class handler(BaseHTTPRequestHandler):
                                 break
                 
                 # If no classes found in HTML, return demo data for testing
-                if not classes:
+                if len(classes) == 0:
                     classes = [
                         {
                             "id": "demo_1",
@@ -173,6 +173,7 @@ class handler(BaseHTTPRequestHandler):
                             "price": "$75/month"
                         }
                     ]
+                    print("Added demo data - no classes found in HTML")
                 
                 data = {
                     "classes": classes,
