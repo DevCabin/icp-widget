@@ -11,8 +11,13 @@ class handler(BaseHTTPRequestHandler):
         genders = qs.get('genders', ['2'])[0]  # Default to '2' like V1
         programs = qs.get('programs', ['56'])[0]  # Default to '56' like V1
 
-        # Make request to iClassPro with required parameters
-        iclasspro_url = f"https://portal.iclasspro.com/{account}/classes?genders={genders}&programs={programs}"
+        # Try the actual IClassPro API endpoint first (like V1 did)
+        api_url = f"https://app.iclasspro.com/api/open/v1/{account}/classes?locationId=1&limit=24&page=1&programs={programs}&levels={genders}"
+        portal_url = f"https://portal.iclasspro.com/{account}/classes?genders={genders}&programs={programs}"
+        
+        # Try API endpoint first
+        iclasspro_url = api_url
+        print(f"Trying API endpoint: {iclasspro_url}")
         try:
             print(f"Fetching from: {iclasspro_url}")
             response = requests.get(iclasspro_url, headers={
@@ -110,8 +115,51 @@ class handler(BaseHTTPRequestHandler):
                     "status": response.status_code
                 }
         except Exception as e:
-            print("Error fetching from iClassPro:", e)
-            data = {"error": str(e)}
+            print("Error fetching from API endpoint:", e)
+            # Try the portal URL as fallback
+            try:
+                print(f"Trying portal fallback: {portal_url}")
+                response = requests.get(portal_url, headers={
+                    'User-Agent': 'Mozilla/5.0 (compatible; ICP-Widget/1.0)',
+                    'Accept': 'application/json, text/html, */*'
+                })
+                
+                if response.headers.get('content-type', '').startswith('application/json'):
+                    data = response.json()
+                else:
+                    # Return demo data for now
+                    data = {
+                        "classes": [
+                            {
+                                "name": "Water Babies (Parent & Me)",
+                                "instructor": "Sarah Martinez",
+                                "time": "10:00 AM - 10:30 AM",
+                                "date": "Monday & Wednesday",
+                                "description": "Gentle introduction to water for infants and toddlers with parent participation.",
+                                "ageGroup": "Ages 6 months - 2 years",
+                                "capacity": 8,
+                                "enrolled": 6,
+                                "price": "$65/month"
+                            },
+                            {
+                                "name": "Beginner Swimmers",
+                                "instructor": "Coach Mike Thompson", 
+                                "time": "4:00 PM - 4:30 PM",
+                                "date": "Tuesday & Thursday",
+                                "description": "Learn basic water safety, floating, and beginning stroke techniques.",
+                                "ageGroup": "Ages 3-5",
+                                "capacity": 6,
+                                "enrolled": 5,
+                                "price": "$75/month"
+                            }
+                        ],
+                        "total": 2,
+                        "source": "demo_fallback",
+                        "note": "Using demo data - API parsing needs adjustment"
+                    }
+            except Exception as e2:
+                print("Portal fallback also failed:", e2)
+                data = {"error": str(e), "fallback_error": str(e2)}
         self.send_response(200)
         self.send_header('Access-Control-Allow-Origin', '*')
         self.send_header('Content-type', 'application/json')
