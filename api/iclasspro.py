@@ -9,8 +9,20 @@ class handler(BaseHTTPRequestHandler):
         account = qs.get('account', ['demo'])[0]
         iclasspro_url = f"https://portal.iclasspro.com/{account}/classes"
         try:
-            response = requests.get(iclasspro_url)
-            data = response.json() if response.headers.get('content-type', '').startswith('application/json') else []
+            print(f"Fetching from: {iclasspro_url}")
+            response = requests.get(iclasspro_url, headers={
+                'User-Agent': 'Mozilla/5.0 (compatible; ICP-Widget/1.0)',
+                'Accept': 'application/json, text/html, */*'
+            })
+            print(f"Response status: {response.status_code}")
+            print(f"Response headers: {dict(response.headers)}")
+            print(f"Response content type: {response.headers.get('content-type', 'unknown')}")
+            print(f"Response text (first 200 chars): {response.text[:200]}")
+            
+            if response.headers.get('content-type', '').startswith('application/json'):
+                data = response.json()
+            else:
+                data = {"error": "Not JSON response", "content_type": response.headers.get('content-type'), "status": response.status_code}
         except Exception as e:
             print("Error fetching from iClassPro:", e)
             data = {"error": str(e)}
