@@ -11,13 +11,13 @@ class handler(BaseHTTPRequestHandler):
         genders = qs.get('genders', ['2'])[0]  # Default to '2' like V1
         programs = qs.get('programs', ['56'])[0]  # Default to '56' like V1
 
-        # Try the actual IClassPro API endpoint first (like V1 did)
-        api_url = f"https://app.iclasspro.com/api/open/v1/{account}/classes?locationId=1&limit=24&page=1&programs={programs}&levels={genders}"
+        # Try the portal URL first since it shows actual classes
         portal_url = f"https://portal.iclasspro.com/{account}/classes?genders={genders}&programs={programs}"
+        api_url = f"https://app.iclasspro.com/api/open/v1/{account}/classes?locationId=1&limit=24&page=1&programs={programs}&levels={genders}"
         
-        # Try API endpoint first
-        iclasspro_url = api_url
-        print(f"Trying API endpoint: {iclasspro_url}")
+        # Try portal URL first since it shows actual classes
+        iclasspro_url = portal_url
+        print(f"Trying portal URL: {iclasspro_url}")
         try:
             print(f"Fetching from: {iclasspro_url}")
             response = requests.get(iclasspro_url, headers={
@@ -93,12 +93,14 @@ class handler(BaseHTTPRequestHandler):
                 
                 # If no classes found in scripts, try to extract from HTML structure
                 if not classes:
-                    # Try multiple HTML patterns
+                    # Try multiple HTML patterns for class cards
                     html_patterns = [
                         r'<article[^>]*class="[^"]*card[^"]*"[^>]*>.*?</article>',
                         r'<div[^>]*class="[^"]*class[^"]*"[^>]*>.*?</div>',
                         r'<div[^>]*class="[^"]*item[^"]*"[^>]*>.*?</div>',
                         r'<li[^>]*class="[^"]*class[^"]*"[^>]*>.*?</li>',
+                        r'<div[^>]*class="[^"]*course[^"]*"[^>]*>.*?</div>',
+                        r'<div[^>]*class="[^"]*program[^"]*"[^>]*>.*?</div>',
                     ]
                     
                     for pattern in html_patterns:
@@ -106,17 +108,39 @@ class handler(BaseHTTPRequestHandler):
                         print(f"Found {len(matches)} matches with pattern: {pattern[:50]}...")
                         
                         if matches:
-                            for match in matches:
-                                # Extract basic info from HTML
+                            for i, match in enumerate(matches):
+                                # Extract more detailed info from HTML
                                 name_match = re.search(r'<h[1-6][^>]*>([^<]+)</h[1-6]>', match, re.IGNORECASE)
                                 desc_match = re.search(r'<p[^>]*>([^<]+)</p>', match, re.IGNORECASE)
                                 
+                                # Look for time/date info
+                                time_match = re.search(r'(\d{1,2}:\d{2}\s*[AP]M)', match, re.IGNORECASE)
+                                day_match = re.search(r'(Monday|Tuesday|Wednesday|Thursday|Friday|Saturday|Sunday)', match, re.IGNORECASE)
+                                
+                                # Look for instructor info
+                                instructor_match = re.search(r'(Instructor|Teacher|Coach)[:\s]*([^<\n]+)', match, re.IGNORECASE)
+                                
+                                # Look for price info
+                                price_match = re.search(r'(\$\d+(?:\.\d{2})?(?:/\w+)?)', match)
+                                
                                 if name_match:
-                                    classes.append({
+                                    class_data = {
+                                        'id': f'class_{i+1}',
                                         'name': name_match.group(1).strip(),
                                         'description': desc_match.group(1).strip() if desc_match else '',
                                         'source': 'html_parsing'
-                                    })
+                                    }
+                                    
+                                    if time_match:
+                                        class_data['time'] = time_match.group(1)
+                                    if day_match:
+                                        class_data['date'] = day_match.group(1)
+                                    if instructor_match:
+                                        class_data['instructor'] = instructor_match.group(2).strip()
+                                    if price_match:
+                                        class_data['price'] = price_match.group(1)
+                                    
+                                    classes.append(class_data)
                             
                             if classes:
                                 break
